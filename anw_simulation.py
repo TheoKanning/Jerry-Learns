@@ -4,6 +4,8 @@ import sys
 from pygame.locals import *
 from pygame.color import *
 
+LEG_COLLISION_TYPE = 1
+
 
 def to_pygame(p):
     """Small hack to convert pymunk to pygame coordinates"""
@@ -37,10 +39,12 @@ def add_test_bodies(space):
     top_circle_body = pymunk.Body(mass, inertia)
     top_circle_body.position = 301, 250
     top_circle_shape = pymunk.Circle(top_circle_body, radius)
+    top_circle_shape.collision_type = LEG_COLLISION_TYPE
 
     bottom_circle_body = pymunk.Body(mass, inertia)
     bottom_circle_body.position = 300, 150
     bottom_circle_shape = pymunk.Circle(bottom_circle_body, radius)
+    bottom_circle_shape.collision_type = LEG_COLLISION_TYPE
 
     pivot = pymunk.PivotJoint(top_circle_body, bottom_circle_body, (0, -50), (0, 50))
     space.add(top_circle_body, top_circle_shape, bottom_circle_body, bottom_circle_shape, pivot)
@@ -71,6 +75,7 @@ def main():
 
     space = pymunk.Space()
     space.gravity = (0.0, -900.0)
+    space.add_collision_handler(LEG_COLLISION_TYPE, LEG_COLLISION_TYPE, begin=lambda x, y: False)
 
     ground = add_ground(space)
 
