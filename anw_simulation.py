@@ -4,8 +4,10 @@ import sys
 from pygame.locals import *
 from pygame.color import *
 from math import pi
+from math import sin
 
 LEG_COLLISION_TYPE = 1
+motor = None
 
 
 def to_pygame(p):
@@ -37,19 +39,23 @@ def add_test_bodies(space):
     width = 5
     inertia = pymunk.moment_for_segment(mass, (0, 50), (0, -50))
 
-    top_circle_body = pymunk.Body(mass, inertia)
-    top_circle_body.position = 299, 250
+    # top_circle_body = pymunk.Body(mass, inertia)
+    top_circle_body = pymunk.Body()
+    top_circle_body.position = 299, 275
     top_circle_shape = pymunk.Segment(top_circle_body, (0, 50), (0, -50), width)
     top_circle_shape.collision_type = LEG_COLLISION_TYPE
 
     bottom_circle_body = pymunk.Body(mass, inertia)
-    bottom_circle_body.position = 300, 150
+    bottom_circle_body.position = 300, 175
     bottom_circle_shape = pymunk.Segment(bottom_circle_body, (0, 50), (0, -50), width)
     bottom_circle_shape.collision_type = LEG_COLLISION_TYPE
 
     pivot = pymunk.PivotJoint(top_circle_body, bottom_circle_body, (0, -50), (0, 50))
-    rotary_limit = pymunk.RotaryLimitJoint(top_circle_body, bottom_circle_body, -2 * pi / 3, 0)
-    space.add(top_circle_body, top_circle_shape, bottom_circle_body, bottom_circle_shape, pivot, rotary_limit)
+    # rotary_limit = pymunk.RotaryLimitJoint(top_circle_body, bottom_circle_body, -2 * pi / 3, -.5)
+    global motor
+    motor = pymunk.SimpleMotor(top_circle_body, bottom_circle_body, 1)
+    space.add(top_circle_shape, bottom_circle_body, bottom_circle_shape, pivot, motor)
+    # space.add(top_circle_body, top_circle_shape, bottom_circle_body, bottom_circle_shape, pivot, rotary_limit)
     return top_circle_shape, bottom_circle_shape
 
 
@@ -74,6 +80,7 @@ def main():
     pygame.display.set_caption("ANW Simulation")
     clock = pygame.time.Clock()
     running = True
+    force_time = 0
 
     space = pymunk.Space()
     space.gravity = (0.0, -900.0)
@@ -85,6 +92,10 @@ def main():
 
     while running:
         screen.fill(THECOLORS["white"])
+
+        force = -sin(force_time * pi) * 1
+        motor.rate = force
+        force_time+=0.01
 
         for event in pygame.event.get():
             if event.type == QUIT:
