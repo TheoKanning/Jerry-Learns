@@ -1,6 +1,7 @@
 import pygame
 import pymunk
 import sys
+from human_body import HumanBody
 from pygame.locals import *
 from pygame.color import *
 from math import pi
@@ -24,7 +25,7 @@ def add_ground(space):
 
     line_body = pymunk.Body()
     line_body.position = (300, 100)
-    segment = pymunk.Segment(line_body, (-300, 0), (300, 0), 10)
+    segment = pymunk.Segment(line_body, (-300, 0), (300, 0), 5)
     space.add(segment)
     return segment
 
@@ -80,30 +81,29 @@ def main():
     pygame.display.set_caption("ANW Simulation")
     clock = pygame.time.Clock()
     running = True
-    force_time = 0
 
     space = pymunk.Space()
     space.gravity = (0.0, -900.0)
-    space.add_collision_handler(LEG_COLLISION_TYPE, LEG_COLLISION_TYPE, begin=lambda x, y: False)
+    # space.add_collision_handler(LEG_COLLISION_TYPE, LEG_COLLISION_TYPE, begin=lambda x, y: False)
 
     ground = add_ground(space)
 
-    test_shapes = add_test_bodies(space)
+    body = HumanBody()
+    space.add(body.torso_body, body.torso_shape)
+
+    # test_shapes = add_test_bodies(space)
 
     while running:
         screen.fill(THECOLORS["white"])
-
-        force = -sin(force_time * pi) * 1
-        motor.rate = force
-        force_time+=0.01
 
         for event in pygame.event.get():
             if event.type == QUIT:
                 running = False
 
-        draw_lines(screen, test_shapes, line_color=THECOLORS["blue"])
+        # draw_lines(screen, test_shapes, line_color=THECOLORS["blue"])
 
         draw_lines(screen, (ground,))
+        body.draw(screen)
         space.step(1 / 50.0)
         pygame.display.flip()
         clock.tick(50)
