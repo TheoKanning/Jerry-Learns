@@ -83,15 +83,15 @@ def create_thigh(torso_body, torso_shape):
     thigh_shape.collision_type = BODY_COLLISION_TYPE
 
     pivot = pymunk.PivotJoint(torso_body, thigh_body, torso_shape.b, (0, length/2))
-    # rotary_limit = pymunk.RotaryLimitJoint(top_circle_body, bottom_circle_body, -2 * pi / 3, -.5)
+    rotary_limit = pymunk.RotaryLimitJoint(torso_body, thigh_body, 0, 3*pi/4)
 
-    return thigh_body, thigh_shape, pivot
+    return thigh_body, thigh_shape, pivot, rotary_limit
 
 
 class HumanBody:
     def __init__(self):
         self.torso_body, self.torso_shape = create_torso()
-        self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot = create_thigh(self.torso_body, self.torso_shape)
+        self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot, self.left_thigh_rotary_limit = create_thigh(self.torso_body, self.torso_shape)
 
     def draw(self, screen):
         """
@@ -106,4 +106,4 @@ class HumanBody:
         :param space: pymunk space
         :return: nothing
         """
-        space.add(self.torso_shape, self.torso_body, self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot)
+        space.add(self.torso_shape, self.torso_body, self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot, self.left_thigh_rotary_limit)
