@@ -74,3 +74,11 @@ class HumanBody:
         :param screen: pygame screen
         """
         pymunk.pygame_util.draw(screen, self.torso_shape)
+
+    def add_to_space(self, space):
+        """
+        Adds all relevant bodies, shapes, and constraints to the given pymunk space
+        :param space: pymunk space
+        :return: nothing
+        """
+        space.add(self.torso_shape, self.torso_body)

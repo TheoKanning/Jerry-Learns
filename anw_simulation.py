@@ -68,9 +68,9 @@ def draw_ball(screen, ball):
 def draw_lines(screen, lines, line_color=THECOLORS["lightgray"]):
     for line in lines:
         body = line.body
-        pv1 = body.position + line.a.rotated(body.angle)  # 1
+        pv1 = body.position + line.a.rotated(body.angle)
         pv2 = body.position + line.b.rotated(body.angle)
-        p1 = to_pygame(pv1)  # 2
+        p1 = to_pygame(pv1)
         p2 = to_pygame(pv2)
         pygame.draw.lines(screen, line_color, False, [p1, p2])
 
@@ -89,7 +89,7 @@ def main():
     ground = add_ground(space)
 
     body = HumanBody()
-    space.add(body.torso_body, body.torso_shape)
+    body.add_to_space(space)
 
     # test_shapes = add_test_bodies(space)
 
