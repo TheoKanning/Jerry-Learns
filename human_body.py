@@ -3,7 +3,7 @@ import pymunk
 import pymunk.pygame_util
 
 # Collision Types #
-
+BODY_COLLISION_TYPE = 25
 
 # Weight Fractions #
 HEAD_WEIGHT_FRACTION = 0.0826
@@ -61,27 +61,37 @@ def create_torso():
     torso_body = pymunk.Body(mass, inertia)
     torso_body.position = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTION + length / 2 + STARTING_Y_POSITION
     torso_shape = pymunk.Segment(torso_body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
+    torso_shape.collision_type = BODY_COLLISION_TYPE
     return torso_body, torso_shape
 
 
-def create_thigh():
+def create_thigh(torso_body, torso_shape):
     """
     Creates the  thigh given a torso and returns its body, shape, and any constraints
+    :param torso_body pymunk body for the torso this will be attached to
+    :param torso_shape pymunk shape for the torso
     :return: body, shape, motor
     """
     mass = TOTAL_MASS * THIGH_WEIGHT_FRACTION
     length = TOTAL_HEIGHT * THIGH_HEIGHT_FRACTION
     inertia = pymunk.moment_for_segment(mass, (0, length / 2), (0, -length / 2))
+
     thigh_body = pymunk.Body(mass, inertia)
     thigh_body.position = STARTING_X_POSITION, TOTAL_HEIGHT * KNEE_STARTING_HEIGHT_FRACTION + length / 2 + STARTING_Y_POSITION
+
     thigh_shape = pymunk.Segment(thigh_body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
-    return thigh_body, thigh_shape
+    thigh_shape.collision_type = BODY_COLLISION_TYPE
+
+    pivot = pymunk.PivotJoint(torso_body, thigh_body, torso_shape.b, (0, length/2))
+    # rotary_limit = pymunk.RotaryLimitJoint(top_circle_body, bottom_circle_body, -2 * pi / 3, -.5)
+
+    return thigh_body, thigh_shape, pivot
 
 
 class HumanBody:
     def __init__(self):
         self.torso_body, self.torso_shape = create_torso()
-        self.left_thigh_body, self.left_thigh_shape = create_thigh()
+        self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot = create_thigh(self.torso_body, self.torso_shape)
 
     def draw(self, screen):
         """
@@ -96,4 +106,4 @@ class HumanBody:
         :param space: pymunk space
         :return: nothing
         """
-        space.add(self.torso_shape, self.torso_body, self.left_thigh_body, self.left_thigh_shape)
+        space.add(self.torso_shape, self.torso_body, self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot)

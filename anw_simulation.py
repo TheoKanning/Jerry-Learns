@@ -84,7 +84,7 @@ def main():
 
     space = pymunk.Space()
     space.gravity = (0.0, -900.0)
-    # space.add_collision_handler(LEG_COLLISION_TYPE, LEG_COLLISION_TYPE, begin=lambda x, y: False)
+    space.add_collision_handler(25, 25, begin=lambda x, y: False)
 
     ground = add_ground(space)
 
