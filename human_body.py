@@ -166,3 +166,5 @@ class HumanBody:
         space.add(self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot, self.left_thigh_rotary_limit)
         space.add(self.left_leg_body, self.left_leg_shape, self.left_knee_pivot, self.left_knee_rotary_limit)
         space.add(self.left_foot_body, self.left_foot_shape, self.left_ankle_pivot, self.left_ankle_rotary_limit)
+
+
