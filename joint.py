@@ -12,9 +12,9 @@ class Joint:
         :param max_force: maximum force in Newtons exerted by this joint
         :return:
         """
-        self.pivot = pymunk.PivotJoint(a, b, a.b, b.a)
-        self.rotary_limit = pymunk.RotaryLimitJoint(a, b, angular_range[0], angular_range[1])
-        self.motor = pymunk.SimpleMotor(a, b, 0)
+        self.pivot = pymunk.PivotJoint(a.body, b.body, a.shape.b, b.shape.a)
+        self.rotary_limit = pymunk.RotaryLimitJoint(a.body, b.body, angular_range[0], angular_range[1])
+        self.motor = pymunk.SimpleMotor(a.body, b.body, 0)
         self.motor.max_force = max_force
 
     def add_to_space(self, space):

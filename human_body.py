@@ -1,4 +1,6 @@
 from math import pi
+from joint import Joint
+from segment import Segment
 import pymunk
 import pymunk.pygame_util
 
@@ -50,111 +52,45 @@ STARTING_Y_POSITION = 150
 SEGMENT_WIDTH = 5
 FRICTION = 1
 
+# Segment Masses
+TORSO_MASS = TOTAL_MASS * TORSO_WEIGHT_FRACTION
+THIGH_MASS = TOTAL_MASS * THIGH_WEIGHT_FRACTION
+LEG_MASS = TOTAL_MASS * LEG_WEIGHT_FRACTION
+FOOT_MASS = TOTAL_MASS * FOOT_WEIGHT_FRACTION
 
-def create_torso():
-    """
-    Creates a pymunk body and shape to represent the torso
-    :returns torso body, torso shape
-    """
-    mass = TOTAL_MASS * TORSO_WEIGHT_FRACTION
-    length = TOTAL_HEIGHT * TORSO_HEIGHT_FRACTION
-    inertia = pymunk.moment_for_segment(mass, (0, length / 2), (0, -length / 2))
-    torso_body = pymunk.Body(mass, inertia)
-    torso_body.position = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTION + length / 2 + STARTING_Y_POSITION
-    torso_shape = pymunk.Segment(torso_body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
-    torso_shape.collision_type = BODY_COLLISION_TYPE
-    return torso_body, torso_shape
+# Segment Lengths
+TORSO_LENGTH = TORSO_HEIGHT_FRACTION * TOTAL_HEIGHT
+THIGH_LENGTH = THIGH_HEIGHT_FRACTION * TOTAL_HEIGHT
+LEG_LENGTH = LEG_HEIGHT_FRACTION * TOTAL_HEIGHT
+FOOT_LENGTH = FOOT_HEIGHT_FRACTION * TOTAL_HEIGHT
 
-
-def create_thigh(torso_body, torso_shape):
-    """
-    Creates the  thigh given a torso and returns its body, shape, and any constraints
-    :param torso_body pymunk body for the torso this will be attached to
-    :param torso_shape pymunk shape for the torso
-    :return: body, shape, pivot, rotary limit, motor
-    """
-    mass = TOTAL_MASS * THIGH_WEIGHT_FRACTION
-    length = TOTAL_HEIGHT * THIGH_HEIGHT_FRACTION
-    inertia = pymunk.moment_for_segment(mass, (0, length / 2), (0, -length / 2))
-
-    thigh_body = pymunk.Body(mass, inertia)
-    thigh_body.position = STARTING_X_POSITION, TOTAL_HEIGHT * KNEE_STARTING_HEIGHT_FRACTION + length / 2 + STARTING_Y_POSITION
-
-    thigh_shape = pymunk.Segment(thigh_body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
-    thigh_shape.collision_type = BODY_COLLISION_TYPE
-    thigh_shape.friction = FRICTION
-
-    pivot = pymunk.PivotJoint(torso_body, thigh_body, torso_shape.b, (0, length / 2))
-    rotary_limit = pymunk.RotaryLimitJoint(torso_body, thigh_body, HIP_MIN_ANGLE, HIP_MAX_ANGLE)
-
-    return thigh_body, thigh_shape, pivot, rotary_limit
-
-
-def create_leg(thigh_body, thigh_shape):
-    """
-    Creates a lower leg attached to the given thigh
-    :param thigh_body: pymunk body of thigh
-    :param thigh_shape: pymunk shape of thigh
-    :return: body, shape, pivot, rotary limit, motor
-    """
-    mass = TOTAL_MASS * LEG_WEIGHT_FRACTION
-    length = TOTAL_HEIGHT * LEG_HEIGHT_FRACTION
-    inertia = pymunk.moment_for_segment(mass, (0, length / 2), (0, -length / 2))
-
-    leg_body = pymunk.Body(mass, inertia)
-    leg_body.position = STARTING_X_POSITION + 1, length / 2 + STARTING_Y_POSITION
-
-    leg_shape = pymunk.Segment(leg_body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
-    leg_shape.collision_type = BODY_COLLISION_TYPE
-    leg_shape.friction = FRICTION
-
-    pivot = pymunk.PivotJoint(thigh_body, leg_body, thigh_shape.b, (0, length / 2))
-    rotary_limit = pymunk.RotaryLimitJoint(thigh_body, leg_body, KNEE_MIN_ANGLE, KNEE_MAX_ANGLE)
-
-    return leg_body, leg_shape, pivot, rotary_limit
-
-
-def create_foot(leg_body, leg_shape):
-    """
-    Creates a foot attached to the given lower leg
-    :param leg_body: pymunk body of thigh
-    :param leg_shape: pymunk shape of thigh
-    :return: body, shape, pivot, rotary limit, motor
-    """
-    mass = TOTAL_MASS * FOOT_WEIGHT_FRACTION
-    length = TOTAL_HEIGHT * FOOT_HEIGHT_FRACTION
-    inertia = pymunk.moment_for_segment(mass, (length / 2, 0), (-length / 2, 0))
-
-    foot_body = pymunk.Body(mass, inertia)
-    foot_body.position = STARTING_X_POSITION + length / 2, STARTING_Y_POSITION
-
-    foot_shape = pymunk.Segment(foot_body, (-length / 2, 0), (length / 2, 0), SEGMENT_WIDTH)
-    foot_shape.collision_type = BODY_COLLISION_TYPE
-    foot_shape.friction = FRICTION
-
-    pivot = pymunk.PivotJoint(leg_body, foot_body, leg_shape.b, (-length / 2, 0))
-    rotary_limit = pymunk.RotaryLimitJoint(leg_body, foot_body, ANKLE_MIN_ANGLE, ANKLE_MAX_ANGLE)
-
-    return foot_body, foot_shape, pivot, rotary_limit
+# Starting Positions
+TORSO_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTION + TORSO_LENGTH / 2 + STARTING_Y_POSITION
+THIGH_POSITION = STARTING_X_POSITION + 1, TOTAL_HEIGHT * KNEE_STARTING_HEIGHT_FRACTION + THIGH_LENGTH / 2 + STARTING_Y_POSITION
+LEG_POSITION = STARTING_X_POSITION, LEG_LENGTH / 2 + STARTING_Y_POSITION
+FOOT_POSITION = STARTING_X_POSITION + FOOT_LENGTH / 2, STARTING_Y_POSITION
 
 
 class HumanBody:
     def __init__(self):
-        self.torso_body, self.torso_shape = create_torso()
-        self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot, self.left_thigh_rotary_limit = create_thigh(
-            self.torso_body, self.torso_shape)
-        self.left_leg_body, self.left_leg_shape, self.left_knee_pivot, self.left_knee_rotary_limit = create_leg(
-            self.left_thigh_body, self.left_thigh_shape)
-        self.left_foot_body, self.left_foot_shape, self.left_ankle_pivot, self.left_ankle_rotary_limit = create_foot(
-            self.left_leg_body, self.left_leg_shape)
+        self.torso = Segment(TORSO_MASS, TORSO_LENGTH, TORSO_POSITION, BODY_COLLISION_TYPE)
+        self.left_thigh = Segment(THIGH_MASS, THIGH_LENGTH, THIGH_POSITION, BODY_COLLISION_TYPE)
+        self.left_leg = Segment(LEG_MASS, LEG_LENGTH, LEG_POSITION, BODY_COLLISION_TYPE)
+        self.left_foot = Segment(FOOT_MASS, FOOT_LENGTH, FOOT_POSITION, BODY_COLLISION_TYPE)
+
+        self.left_hip = Joint(self.torso, self.left_thigh, (HIP_MIN_ANGLE, HIP_MAX_ANGLE), 100)
+        self.left_knee = Joint(self.left_thigh, self.left_leg, (KNEE_MIN_ANGLE, KNEE_MAX_ANGLE), 100)
+        self.left_ankle = Joint(self.left_leg, self.left_foot, (ANKLE_MIN_ANGLE, ANKLE_MAX_ANGLE), 100)
 
     def draw(self, screen):
         """
         Draws all bodies using the supplied pygame screen
         :param screen: pygame screen
         """
-        pymunk.pygame_util.draw(screen, self.torso_shape, self.left_thigh_shape, self.left_leg_shape,
-                                self.left_foot_shape)
+        self.torso.draw(screen)
+        self.left_thigh.draw(screen)
+        self.left_leg.draw(screen)
+        self.left_foot.draw(screen)
 
     def add_to_space(self, space):
         """
@@ -162,9 +98,10 @@ class HumanBody:
         :param space: pymunk space
         :return: nothing
         """
-        space.add(self.torso_shape, self.torso_body)
-        space.add(self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot, self.left_thigh_rotary_limit)
-        space.add(self.left_leg_body, self.left_leg_shape, self.left_knee_pivot, self.left_knee_rotary_limit)
-        space.add(self.left_foot_body, self.left_foot_shape, self.left_ankle_pivot, self.left_ankle_rotary_limit)
-
-
+        self.torso.add_to_space(space)
+        self.left_thigh.add_to_space(space)
+        self.left_leg.add_to_space(space)
+        self.left_foot.add_to_space(space)
+        self.left_hip.add_to_space(space)
+        self.left_knee.add_to_space(space)
+        self.left_ankle.add_to_space(space)

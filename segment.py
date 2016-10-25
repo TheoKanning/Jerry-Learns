@@ -23,7 +23,7 @@ class Segment:
         self.body = pymunk.Body(mass, inertia)
         self.body.position = starting_position
 
-        self.shape = pymunk.Segment(self.body, (0, length / 2), (0, length / 2), SEGMENT_WIDTH)
+        self.shape = pymunk.Segment(self.body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
         self.shape.collision_type = collision_type
         self.shape.friction = FRICTION
 
