@@ -21,7 +21,7 @@ UPPER_ARM_HEIGHT_FRACTION = 0.172
 FOREARM_HEIGHT_FRACTION = 0.157  # Not including hand
 THIGH_HEIGHT_FRACTION = 0.232
 LEG_HEIGHT_FRACTION = 0.247
-FOOT_HEIGHT_FRACTION = 0.0425
+FOOT_HEIGHT_FRACTION = 0.1  # Counts foot length, not height
 
 # Starting Height Fractions #
 SHOULDER_STARTING_HEIGHT_FRACTION = LEG_HEIGHT_FRACTION + THIGH_HEIGHT_FRACTION + TORSO_HEIGHT_FRACTION
@@ -39,8 +39,8 @@ HIP_MIN_ANGLE = 0
 HIP_MAX_ANGLE = 3 * pi / 4
 KNEE_MIN_ANGLE = -2 * pi / 3
 KNEE_MAX_ANGLE = 0
-FOOT_MIN_ANGLE = -pi / 4
-FOOT_MAX_ANGLE = pi / 4
+ANKLE_MIN_ANGLE = -pi / 4
+ANKLE_MAX_ANGLE = pi / 4
 
 # Size and Weight Constants
 TOTAL_MASS = 80  # Made up units
@@ -48,6 +48,7 @@ TOTAL_HEIGHT = 300  # Pygame pixels
 STARTING_X_POSITION = 300
 STARTING_Y_POSITION = 150
 SEGMENT_WIDTH = 5
+FRICTION = 1
 
 
 def create_torso():
@@ -81,6 +82,7 @@ def create_thigh(torso_body, torso_shape):
 
     thigh_shape = pymunk.Segment(thigh_body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
     thigh_shape.collision_type = BODY_COLLISION_TYPE
+    thigh_shape.friction = FRICTION
 
     pivot = pymunk.PivotJoint(torso_body, thigh_body, torso_shape.b, (0, length / 2))
     rotary_limit = pymunk.RotaryLimitJoint(torso_body, thigh_body, HIP_MIN_ANGLE, HIP_MAX_ANGLE)
@@ -104,11 +106,36 @@ def create_leg(thigh_body, thigh_shape):
 
     leg_shape = pymunk.Segment(leg_body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
     leg_shape.collision_type = BODY_COLLISION_TYPE
+    leg_shape.friction = FRICTION
 
     pivot = pymunk.PivotJoint(thigh_body, leg_body, thigh_shape.b, (0, length / 2))
     rotary_limit = pymunk.RotaryLimitJoint(thigh_body, leg_body, KNEE_MIN_ANGLE, KNEE_MAX_ANGLE)
 
     return leg_body, leg_shape, pivot, rotary_limit
+
+
+def create_foot(leg_body, leg_shape):
+    """
+    Creates a foot attached to the given lower leg
+    :param leg_body: pymunk body of thigh
+    :param leg_shape: pymunk shape of thigh
+    :return: body, shape, pivot, rotary limit, motor
+    """
+    mass = TOTAL_MASS * FOOT_WEIGHT_FRACTION
+    length = TOTAL_HEIGHT * FOOT_HEIGHT_FRACTION
+    inertia = pymunk.moment_for_segment(mass, (length / 2, 0), (-length / 2, 0))
+
+    foot_body = pymunk.Body(mass, inertia)
+    foot_body.position = STARTING_X_POSITION + length / 2, STARTING_Y_POSITION
+
+    foot_shape = pymunk.Segment(foot_body, (-length / 2, 0), (length / 2, 0), SEGMENT_WIDTH)
+    foot_shape.collision_type = BODY_COLLISION_TYPE
+    foot_shape.friction = FRICTION
+
+    pivot = pymunk.PivotJoint(leg_body, foot_body, leg_shape.b, (-length / 2, 0))
+    rotary_limit = pymunk.RotaryLimitJoint(leg_body, foot_body, ANKLE_MIN_ANGLE, ANKLE_MAX_ANGLE)
+
+    return foot_body, foot_shape, pivot, rotary_limit
 
 
 class HumanBody:
@@ -118,13 +145,16 @@ class HumanBody:
             self.torso_body, self.torso_shape)
         self.left_leg_body, self.left_leg_shape, self.left_knee_pivot, self.left_knee_rotary_limit = create_leg(
             self.left_thigh_body, self.left_thigh_shape)
+        self.left_foot_body, self.left_foot_shape, self.left_ankle_pivot, self.left_ankle_rotary_limit = create_foot(
+            self.left_leg_body, self.left_leg_shape)
 
     def draw(self, screen):
         """
         Draws all bodies using the supplied pygame screen
         :param screen: pygame screen
         """
-        pymunk.pygame_util.draw(screen, self.torso_shape, self.left_thigh_shape, self.left_leg_shape)
+        pymunk.pygame_util.draw(screen, self.torso_shape, self.left_thigh_shape, self.left_leg_shape,
+                                self.left_foot_shape)
 
     def add_to_space(self, space):
         """
@@ -135,3 +165,4 @@ class HumanBody:
         space.add(self.torso_shape, self.torso_body)
         space.add(self.left_thigh_body, self.left_thigh_shape, self.left_hip_pivot, self.left_thigh_rotary_limit)
         space.add(self.left_leg_body, self.left_leg_shape, self.left_knee_pivot, self.left_knee_rotary_limit)
+        space.add(self.left_foot_body, self.left_foot_shape, self.left_ankle_pivot, self.left_ankle_rotary_limit)
