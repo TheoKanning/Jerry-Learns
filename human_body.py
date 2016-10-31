@@ -1,8 +1,7 @@
 from math import pi
 from joint import Joint
 from segment import Segment
-import pymunk
-import pymunk.pygame_util
+import pygame
 
 # Collision Types #
 BODY_COLLISION_TYPE = 25
@@ -49,8 +48,6 @@ TOTAL_MASS = 80  # Made up units
 TOTAL_HEIGHT = 300  # Pygame pixels
 STARTING_X_POSITION = 300
 STARTING_Y_POSITION = 150
-SEGMENT_WIDTH = 5
-FRICTION = 1
 
 # Segment Masses
 TORSO_MASS = TOTAL_MASS * TORSO_WEIGHT_FRACTION
@@ -66,9 +63,10 @@ FOOT_LENGTH = FOOT_HEIGHT_FRACTION * TOTAL_HEIGHT
 
 # Starting Positions
 TORSO_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTION + TORSO_LENGTH / 2 + STARTING_Y_POSITION
-THIGH_POSITION = STARTING_X_POSITION + 1, TOTAL_HEIGHT * KNEE_STARTING_HEIGHT_FRACTION + THIGH_LENGTH / 2 + STARTING_Y_POSITION
+THIGH_POSITION = STARTING_X_POSITION + 10, TOTAL_HEIGHT * KNEE_STARTING_HEIGHT_FRACTION + THIGH_LENGTH / 2 + STARTING_Y_POSITION
 LEG_POSITION = STARTING_X_POSITION, LEG_LENGTH / 2 + STARTING_Y_POSITION
 FOOT_POSITION = STARTING_X_POSITION + FOOT_LENGTH / 2, STARTING_Y_POSITION
+
 
 
 class HumanBody:
@@ -102,6 +100,7 @@ class HumanBody:
         self.left_thigh.add_to_space(space)
         self.left_leg.add_to_space(space)
         self.left_foot.add_to_space(space)
+
         self.left_hip.add_to_space(space)
         self.left_knee.add_to_space(space)
         self.left_ankle.add_to_space(space)

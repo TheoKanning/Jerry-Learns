@@ -4,16 +4,10 @@ import sys
 from human_body import HumanBody
 from pygame.locals import *
 from pygame.color import *
-from math import pi
-from math import sin
+from conversion import to_pygame
 
 LEG_COLLISION_TYPE = 1
 motor = None
-
-
-def to_pygame(p):
-    """Small hack to convert pymunk to pygame coordinates"""
-    return int(p.x), int(-p.y + 600)
 
 
 def add_ground(space):
@@ -26,6 +20,7 @@ def add_ground(space):
     line_body = pymunk.Body()
     line_body.position = (300, 100)
     segment = pymunk.Segment(line_body, (-300, 0), (300, 0), 5)
+    segment.friction = 1
     space.add(segment)
     return segment
 
