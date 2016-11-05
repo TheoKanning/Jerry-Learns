@@ -2,6 +2,7 @@ import pymunk
 import pymunk.pygame_util
 from pymunk import Vec2d
 from conversion import to_pygame
+from human_body_constants import BODY_COLLISION_TYPE
 import math
 import pygame.transform
 
@@ -14,24 +15,53 @@ Class that represents one segment of the human body, i.e. upper arm, thigh.
 
 
 class Segment:
-    def __init__(self, mass, length, starting_position, collision_type, image=None):
+    def __init__(self, mass, length, starting_position, collision_type=BODY_COLLISION_TYPE, angle=0,
+                 image=None):
         """
         :param mass: mass in kilograms
         :param length: length in meters
-        :param starting_position: (x, y) tuple of location of center of segment
+        :param starting_position: (x, y) tuple of location of attachment point
+        :param angle: angle in radians relative to vertical, in absolute coordinates
         :param collision_type: enumerated integer that determines collision behavior
         :return: nothing
         """
         inertia = pymunk.moment_for_segment(mass, (length / 2, 0), (-length / 2, 0))
 
         self.body = pymunk.Body(mass, inertia)
-        self.body.position = starting_position
 
-        self.shape = pymunk.Segment(self.body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
+        x = length * math.sin(angle)
+        y = -length * math.cos(angle)
+        self.body.position = (starting_position[0] + x / 2, starting_position[1] + y / 2)
+        self.shape = pymunk.Segment(self.body, (-x / 2, -y / 2), (x / 2, y / 2), SEGMENT_WIDTH)
         self.shape.collision_type = collision_type
         self.shape.friction = FRICTION
 
         self.image = image
+
+    def angle(self):
+        """
+        Returns the absolute angle of this segment the pymunk coordinate system
+        :return: angle in radians
+        """
+        a = self.shape.a
+        b = self.shape.b
+        dx = b[0] - a[0]
+        dy = b[1] - a[1]
+        return math.atan2(dy, dx) + math.pi / 2
+
+    def get_start_point(self):
+        """
+        Returns the coordinates of the shape's start point
+        :return: (x,y) tuple of end point coordinates
+        """
+        return self.body.position + self.shape.a
+
+    def get_end_point(self):
+        """
+        Returns the coordinates of the shape's end point
+        :return: (x,y) tuple of end point coordinates
+        """
+        return self.body.position + self.shape.b
 
     def add_to_space(self, space):
         """
