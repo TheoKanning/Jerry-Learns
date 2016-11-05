@@ -5,14 +5,16 @@ from segment import Segment
 
 class HumanBody:
     def __init__(self):
-        self.torso = Segment(body.TORSO_MASS, body.TORSO_LENGTH, body.TORSO_POSITION)
+        self.torso = Segment(body.TORSO_MASS, body.TORSO_LENGTH, body.TORSO_POSITION, image=body.TORSO_IMAGE)
         left_thigh_angle = self.torso.angle() + body.LEFT_HIP_STARTING_ANGLE
         self.left_thigh = Segment(body.THIGH_MASS, body.THIGH_LENGTH, self.torso.get_end_point(),
-                                  angle=left_thigh_angle)
+                                  angle=left_thigh_angle, image=body.THIGH_IMAGE)
         left_leg_angle = self.left_thigh.angle() + body.LEFT_KNEE_STARTING_ANGLE
-        self.left_leg = Segment(body.LEG_MASS, body.LEG_LENGTH, self.left_thigh.get_end_point(), angle=left_leg_angle)
+        self.left_leg = Segment(body.LEG_MASS, body.LEG_LENGTH, self.left_thigh.get_end_point(), angle=left_leg_angle,
+                                image=body.LEG_IMAGE)
         left_foot_angle = self.left_leg.angle() + body.LEFT_ANKLE_STARTING_ANGLE
-        self.left_foot = Segment(body.FOOT_MASS, body.FOOT_LENGTH, self.left_leg.get_end_point(), angle=left_foot_angle)
+        self.left_foot = Segment(body.FOOT_MASS, body.FOOT_LENGTH, self.left_leg.get_end_point(), angle=left_foot_angle,
+                                 image=body.FOOT_IMAGE)
 
         self.left_hip = Joint(self.torso, self.left_thigh, (body.HIP_MIN_ANGLE, body.HIP_MAX_ANGLE), 100)
         self.left_knee = Joint(self.left_thigh, self.left_leg, (body.KNEE_MIN_ANGLE, body.KNEE_MAX_ANGLE), 100)

@@ -3,11 +3,14 @@ import pymunk.pygame_util
 from pymunk import Vec2d
 from conversion import to_pygame
 from human_body_constants import BODY_COLLISION_TYPE
+from resizeimage import resizeimage
 import math
 import pygame.transform
 
 SEGMENT_WIDTH = 5
 FRICTION = 1
+
+IMAGE_SIZE_RATIO = 1.1
 
 """
 Class that represents one segment of the human body, i.e. upper arm, thigh.
@@ -23,6 +26,7 @@ class Segment:
         :param starting_position: (x, y) tuple of location of attachment point
         :param angle: angle in radians relative to vertical, in absolute coordinates
         :param collision_type: enumerated integer that determines collision behavior
+        :param image: pygame surface
         :return: nothing
         """
         inertia = pymunk.moment_for_segment(mass, (length / 2, 0), (-length / 2, 0))
@@ -36,6 +40,12 @@ class Segment:
         self.shape.collision_type = collision_type
         self.shape.friction = FRICTION
 
+        if image is not None:
+            ratio = length / image.get_height() * IMAGE_SIZE_RATIO
+            new_width = int(image.get_width() * ratio)
+            image = pygame.transform.scale(image, (new_width, int(length)))
+            angle_degrees = math.degrees(self.angle())
+            image = pygame.transform.rotate(image, angle_degrees)
         self.image = image
 
     def angle(self):
@@ -83,8 +93,7 @@ class Segment:
             p = self.body.position
             p = Vec2d(to_pygame(p))
 
-            # we need to rotate 180 degrees because of the y coordinate flip
-            angle_degrees = math.degrees(self.body.angle) + 180
+            angle_degrees = math.degrees(self.body.angle)
             rotated_logo_img = pygame.transform.rotate(self.image, angle_degrees)
 
             offset = Vec2d(rotated_logo_img.get_size()) / 2.

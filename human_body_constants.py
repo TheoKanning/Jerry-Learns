@@ -1,4 +1,5 @@
 from math import pi
+import pygame
 
 # Collision Types #
 BODY_COLLISION_TYPE = 25
@@ -48,7 +49,6 @@ RIGHT_HIP_STARTING_ANGLE = -pi/8
 RIGHT_KNEE_STARTING_ANGLE = 0
 RIGHT_ANKLE_STARTING_ANGLE = pi/2
 
-
 # Size and Weight Constants
 TOTAL_MASS = 80  # Made up units
 TOTAL_HEIGHT = 300  # Pygame pixels
@@ -72,3 +72,9 @@ TORSO_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTIO
 THIGH_POSITION = STARTING_X_POSITION + 10, TOTAL_HEIGHT * KNEE_STARTING_HEIGHT_FRACTION + THIGH_LENGTH / 2 + STARTING_Y_POSITION
 LEG_POSITION = STARTING_X_POSITION, LEG_LENGTH / 2 + STARTING_Y_POSITION
 FOOT_POSITION = STARTING_X_POSITION + FOOT_LENGTH / 2, STARTING_Y_POSITION
+
+# Images
+TORSO_IMAGE = pygame.image.load("jerry/torso.png")
+THIGH_IMAGE = pygame.image.load("jerry/thigh.png")
+LEG_IMAGE = pygame.image.load("jerry/leg.png")
+FOOT_IMAGE = pygame.image.load("jerry/foot.png")
