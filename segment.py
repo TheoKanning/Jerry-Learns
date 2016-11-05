@@ -10,7 +10,7 @@ import pygame.transform
 SEGMENT_WIDTH = 5
 FRICTION = 1
 
-IMAGE_SIZE_RATIO = 1.1
+IMAGE_SIZE_RATIO = 1.3
 
 """
 Class that represents one segment of the human body, i.e. upper arm, thigh.
@@ -43,7 +43,7 @@ class Segment:
         if image is not None:
             ratio = length / image.get_height() * IMAGE_SIZE_RATIO
             new_width = int(image.get_width() * ratio)
-            image = pygame.transform.scale(image, (new_width, int(length)))
+            image = pygame.transform.scale(image, (new_width, int(length * IMAGE_SIZE_RATIO)))
             angle_degrees = math.degrees(self.angle())
             image = pygame.transform.rotate(image, angle_degrees)
         self.image = image

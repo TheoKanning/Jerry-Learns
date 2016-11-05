@@ -25,10 +25,10 @@ class HumanBody:
         Draws all bodies using the supplied pygame screen
         :param screen: pygame screen
         """
-        self.torso.draw(screen)
-        self.left_thigh.draw(screen)
         self.left_leg.draw(screen)
         self.left_foot.draw(screen)
+        self.left_thigh.draw(screen)
+        self.torso.draw(screen)
 
     def add_to_space(self, space):
         """
