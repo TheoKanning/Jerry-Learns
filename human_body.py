@@ -1,3 +1,5 @@
+import math
+
 import human_body_constants as body
 from joint import Joint
 from segment import Segment
@@ -16,15 +18,25 @@ class HumanBody:
         self.left_foot = Segment(body.FOOT_MASS, body.FOOT_LENGTH, self.left_leg.get_end_point(), angle=left_foot_angle,
                                  image=body.FOOT_IMAGE)
 
-        self.left_hip = Joint(self.torso, self.left_thigh, (body.HIP_MIN_ANGLE, body.HIP_MAX_ANGLE), 100)
-        self.left_knee = Joint(self.left_thigh, self.left_leg, (body.KNEE_MIN_ANGLE, body.KNEE_MAX_ANGLE), 100)
-        self.left_ankle = Joint(self.left_leg, self.left_foot, (body.ANKLE_MIN_ANGLE, body.ANKLE_MAX_ANGLE), 100)
+        self.left_hip = Joint(self.torso, self.left_thigh, (body.HIP_MIN_ANGLE, body.HIP_MAX_ANGLE), 1000000)
+        self.left_knee = Joint(self.left_thigh, self.left_leg, (body.KNEE_MIN_ANGLE, body.KNEE_MAX_ANGLE), max_force=0)
+        self.left_ankle = Joint(self.left_leg, self.left_foot, (body.ANKLE_MIN_ANGLE, body.ANKLE_MAX_ANGLE), 10)
+
+        self.count = 0
 
     def draw(self, screen):
         """
         Draws all bodies using the supplied pygame screen
         :param screen: pygame screen
         """
+
+        speed = math.sin(self.count / 100.0) * 1
+        self.left_hip.set_rate(speed)
+        self.count += 1
+        # print speed, self.left_hip.get_rate()
+        print self.torso.body.angle, self.left_thigh.body.angle
+        # self.left_hip.get_angle()
+
         self.left_leg.draw(screen)
         self.left_foot.draw(screen)
         self.left_thigh.draw(screen)

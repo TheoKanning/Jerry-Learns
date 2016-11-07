@@ -32,11 +32,12 @@ class Segment:
         inertia = pymunk.moment_for_segment(mass, (length / 2, 0), (-length / 2, 0))
 
         self.body = pymunk.Body(mass, inertia)
-
+        self.length = length
         x = length * math.sin(angle)
         y = -length * math.cos(angle)
         self.body.position = (starting_position[0] + x / 2, starting_position[1] + y / 2)
-        self.shape = pymunk.Segment(self.body, (-x / 2, -y / 2), (x / 2, y / 2), SEGMENT_WIDTH)
+        self.body.angle = angle
+        self.shape = pymunk.Segment(self.body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
         self.shape.collision_type = collision_type
         self.shape.friction = FRICTION
 
@@ -53,25 +54,28 @@ class Segment:
         Returns the absolute angle of this segment the pymunk coordinate system
         :return: angle in radians
         """
-        a = self.shape.a
-        b = self.shape.b
-        dx = b[0] - a[0]
-        dy = b[1] - a[1]
-        return math.atan2(dy, dx) + math.pi / 2
+
+        return self.body.angle
 
     def get_start_point(self):
         """
-        Returns the coordinates of the shape's start point
-        :return: (x,y) tuple of end point coordinates
+        Returns the coordinates of the shape's start point calculated using the current center point, length, and angle.
+        Assumes that shapes are symmetrical around body position
+        :return: (x,y) tuple of start point coordinates
         """
-        return self.body.position + self.shape.a
+        x = self.body.position[0] - math.sin(self.angle()) * self.length / 2
+        y = self.body.position[1] + math.cos(self.angle()) * self.length / 2
+        return x, y
 
     def get_end_point(self):
         """
-        Returns the coordinates of the shape's end point
+        Returns the coordinates of the shape's end point calculated using the current center point, length, and angle.
+        Assumes that shapes are symmetrical around body position
         :return: (x,y) tuple of end point coordinates
         """
-        return self.body.position + self.shape.b
+        x = self.body.position[0] + math.sin(self.angle()) * self.length / 2
+        y = self.body.position[1] - math.cos(self.angle()) * self.length / 2
+        return x, y
 
     def add_to_space(self, space):
         """
