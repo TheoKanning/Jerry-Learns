@@ -45,8 +45,6 @@ class Segment:
             ratio = length / image.get_height() * IMAGE_SIZE_RATIO
             new_width = int(image.get_width() * ratio)
             image = pygame.transform.scale(image, (new_width, int(length * IMAGE_SIZE_RATIO)))
-            angle_degrees = math.degrees(self.angle())
-            image = pygame.transform.rotate(image, angle_degrees)
         self.image = image
 
     def angle(self):
@@ -91,6 +89,7 @@ class Segment:
             p = self.body.position
             p = Vec2d(to_pygame(p))
 
+            # divide by two because it works
             angle_degrees = math.degrees(self.body.angle)
             rotated_logo_img = pygame.transform.rotate(self.image, angle_degrees)
 
