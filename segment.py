@@ -59,23 +59,17 @@ class Segment:
 
     def get_start_point(self):
         """
-        Returns the coordinates of the shape's start point calculated using the current center point, length, and angle.
-        Assumes that shapes are symmetrical around body position
+        Returns the coordinates of the shape's start point
         :return: (x,y) tuple of start point coordinates
         """
-        x = self.body.position[0] - math.sin(self.angle()) * self.length / 2
-        y = self.body.position[1] + math.cos(self.angle()) * self.length / 2
-        return x, y
+        return self.shape.body.position + self.shape.a.rotated(self.body.angle)
 
     def get_end_point(self):
         """
-        Returns the coordinates of the shape's end point calculated using the current center point, length, and angle.
-        Assumes that shapes are symmetrical around body position
+        Returns the coordinates of the shape's end point
         :return: (x,y) tuple of end point coordinates
         """
-        x = self.body.position[0] + math.sin(self.angle()) * self.length / 2
-        y = self.body.position[1] - math.cos(self.angle()) * self.length / 2
-        return x, y
+        return self.shape.body.position + self.shape.b.rotated(self.body.angle)
 
     def add_to_space(self, space):
         """
@@ -92,7 +86,7 @@ class Segment:
         :return: nothing
         """
         if self.image is None:
-            pymunk.pygame_util.draw(screen, self.shape, self.body)
+            pymunk.pygame_util.draw(screen, self.shape)
         else:
             p = self.body.position
             p = Vec2d(to_pygame(p))

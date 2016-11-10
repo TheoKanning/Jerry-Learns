@@ -10,7 +10,7 @@ class HumanBody:
         self.torso = Segment(body.TORSO_MASS, body.TORSO_LENGTH, body.TORSO_POSITION, image=body.TORSO_IMAGE)
         left_thigh_angle = self.torso.angle() + body.LEFT_HIP_STARTING_ANGLE
         self.left_thigh = Segment(body.THIGH_MASS, body.THIGH_LENGTH, self.torso.get_end_point(),
-                                  angle=left_thigh_angle, image=body.THIGH_IMAGE)
+                                  angle=left_thigh_angle)
         left_leg_angle = self.left_thigh.angle() + body.LEFT_KNEE_STARTING_ANGLE
         self.left_leg = Segment(body.LEG_MASS, body.LEG_LENGTH, self.left_thigh.get_end_point(), angle=left_leg_angle,
                                 image=body.LEG_IMAGE)
