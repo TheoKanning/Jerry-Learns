@@ -1,3 +1,4 @@
+import math
 import pymunk
 
 
@@ -19,6 +20,8 @@ class Joint:
         self.motor = pymunk.SimpleMotor(self.body_a, self.body_b, 0)
         if max_force is not None:
             self.motor.max_force = max_force
+        else:
+            self.motor.max_force = 1000000  # High enough to be strong but won't break rotary limit constraints
 
     def add_to_space(self, space):
         """
@@ -29,7 +32,6 @@ class Joint:
         space.add(self.pivot, self.rotary_limit, self.motor)
 
     def set_rate(self, rate):
-        # todo confirm rate units
         """
         Sets the speed of the motor controlling this joint, motor is still subject to max force and rotary limit constraints
         :param rate: desired angular speed in rad/s
@@ -46,8 +48,8 @@ class Joint:
 
     def get_angle(self):
         """
-        Returns the angular difference between this joint's two bodies
+        Returns the angular difference between this joint's two bodies, adds pi because the second joint is technically
+        upside down when they overlap
         :return: difference in radians
         """
-        print self.body_a.angle, self.body_b.angle
-        return self.body_b.angle - self.body_a.angle
+        return self.body_a.angle - self.body_b.angle + math.pi

@@ -3,7 +3,6 @@ import pymunk.pygame_util
 from pymunk import Vec2d
 from conversion import to_pygame
 from human_body_constants import BODY_COLLISION_TYPE
-from resizeimage import resizeimage
 import math
 import pygame.transform
 
