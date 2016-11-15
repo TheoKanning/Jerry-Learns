@@ -1,6 +1,9 @@
 import pygame
+
+import math
 import pymunk
 import sys
+import os
 from human_body_constants import UPPER_COLLISION_TYPE
 from human_body_constants import LOWER_COLLISION_TYPE
 from human_body_constants import GROUND_COLLISION_TYPE
@@ -8,10 +11,18 @@ from human_body import HumanBody
 from pygame.locals import *
 from pygame.color import *
 from pygame.font import Font
+from neat import nn, population, statistics
 
 SCREEN_WIDTH = 1500
 
 body_hit_ground = False
+
+screen = pygame.display.set_mode((1500, 600))
+
+generation = 0
+individual_number = 0
+population_size = 0
+max_fitness = 0
 
 
 def add_ground(space):
@@ -44,7 +55,6 @@ def set_collision_handlers(space):
 def end_simulation(x, y):
     global body_hit_ground
     body_hit_ground = True
-    print "Hitting ground"
     return True
 
 
@@ -62,7 +72,23 @@ def draw_text(screen, text_list):
         offset += font.get_height()
 
 
-def calculate_fitness(screen):
+def population_fitness(genomes):
+    """
+    Calculates the fitness score of each genome in a population
+    :param genomes: list of genomes
+    """
+    global max_fitness, individual_number, population_size
+    population_size = len(genomes)
+    individual_number = 1
+    for g in genomes:
+        net = nn.create_feed_forward_phenotype(g)
+        fitness = evaluate_network(net)
+        g.fitness = fitness
+        max_fitness = max(fitness, max_fitness)
+        individual_number += 1
+
+
+def evaluate_network(network):
     clock = pygame.time.Clock()
     running = True
     global body_hit_ground
@@ -76,6 +102,8 @@ def calculate_fitness(screen):
     body = HumanBody()
     body.add_to_space(space)
 
+    current_distance = 0
+
     while running:
         screen.fill(THECOLORS["white"])
 
@@ -84,10 +112,17 @@ def calculate_fitness(screen):
                 running = False
 
         if body_hit_ground:
-            print "Body hit ground"
             running = False
 
-        text_list = ["text 1", "text 2"]
+        inputs = body.get_state()
+        outputs = network.serial_activate(inputs)
+        body.set_rates(outputs)
+
+        current_distance = body.get_distance()
+        text_list = ["Generation: {}".format(generation),
+                     "Individual: {}/{}".format(individual_number, population_size),
+                     "Max Distance: {:.0f}".format(max_fitness),
+                     "Current distance: {:.0f}".format(current_distance)]
         draw_text(screen, text_list)
 
         body.draw(screen)
@@ -95,16 +130,18 @@ def calculate_fitness(screen):
         pygame.display.flip()
         clock.tick(50)
 
-    return body.get_distance()
+    return current_distance
 
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((1500, 600))
     pygame.display.set_caption("ANW Simulation")
 
-    calculate_fitness(screen)
-    calculate_fitness(screen)
+    local_dir = os.path.dirname(__file__)
+
+    config_path = os.path.join(local_dir, 'neat_config')
+    pop = population.Population(config_path)
+    pop.run(population_fitness, 5)
 
 
 if __name__ == '__main__':

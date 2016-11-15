@@ -201,4 +201,4 @@ class HumanBody:
         """
         Returns x position of the torso
         """
-        return self.torso.body.position
+        return self.torso.body.position[0]
