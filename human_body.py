@@ -1,5 +1,3 @@
-import math
-
 import human_body_constants as body
 from joint import Joint
 from segment import Segment
@@ -85,14 +83,6 @@ class HumanBody:
         Draws all bodies using the supplied pygame screen
         :param screen: pygame screen
         """
-
-        speed = math.sin(self.count / 10.0) * 1
-        self.right_hip.set_rate(speed)
-        self.left_hip.set_rate(speed)
-        self.count += 1
-        # print speed, self.left_hip.get_rate()
-        print self.right_hip.get_rate()
-        # self.left_hip.get_angle()
 
         # Left arm
         self.left_upper_arm.draw(screen)

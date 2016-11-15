@@ -1,13 +1,12 @@
 import pygame
 import pymunk
 import sys
+from human_body_constants import BODY_COLLISION_TYPE
 from human_body import HumanBody
 from pygame.locals import *
 from pygame.color import *
-from conversion import to_pygame
 
-LEG_COLLISION_TYPE = 1
-motor = None
+SCREEN_WIDTH = 1500
 
 
 def add_ground(space):
@@ -16,77 +15,29 @@ def add_ground(space):
     :param space: pymunk space
     :return: line segment
     """
-
     line_body = pymunk.Body()
-    line_body.position = (300, 100)
-    segment = pymunk.Segment(line_body, (-300, 0), (300, 0), 5)
+    line_body.position = (0, 0)
+    segment = pymunk.Segment(line_body, (-300, 0), (SCREEN_WIDTH, 0), 5)
     segment.friction = 1
     space.add(segment)
     return segment
 
 
-def add_test_bodies(space):
-    """
-    Creates a test body consisting of two circles connected by a pivot joint
-    :param space:
-    :return:
-    """
-    mass = 1
-    width = 5
-    inertia = pymunk.moment_for_segment(mass, (0, 50), (0, -50))
-
-    # top_circle_body = pymunk.Body(mass, inertia)
-    top_circle_body = pymunk.Body()
-    top_circle_body.position = 299, 275
-    top_circle_shape = pymunk.Segment(top_circle_body, (0, 50), (0, -50), width)
-    top_circle_shape.collision_type = LEG_COLLISION_TYPE
-
-    bottom_circle_body = pymunk.Body(mass, inertia)
-    bottom_circle_body.position = 300, 175
-    bottom_circle_shape = pymunk.Segment(bottom_circle_body, (0, 50), (0, -50), width)
-    bottom_circle_shape.collision_type = LEG_COLLISION_TYPE
-
-    pivot = pymunk.PivotJoint(top_circle_body, bottom_circle_body, (0, -50), (0, 50))
-    # rotary_limit = pymunk.RotaryLimitJoint(top_circle_body, bottom_circle_body, -2 * pi / 3, -.5)
-    global motor
-    motor = pymunk.SimpleMotor(top_circle_body, bottom_circle_body, 1)
-    space.add(top_circle_shape, bottom_circle_body, bottom_circle_shape, pivot, motor)
-    # space.add(top_circle_body, top_circle_shape, bottom_circle_body, bottom_circle_shape, pivot, rotary_limit)
-    return top_circle_shape, bottom_circle_shape
-
-
-def draw_ball(screen, ball):
-    p = int(ball.body.position.x), 600 - int(ball.body.position.y)
-    pygame.draw.circle(screen, THECOLORS["blue"], p, int(ball.radius), 2)
-
-
-def draw_lines(screen, lines, line_color=THECOLORS["lightgray"]):
-    for line in lines:
-        body = line.body
-        pv1 = body.position + line.a.rotated(body.get_angle)
-        pv2 = body.position + line.b.rotated(body.get_angle)
-        p1 = to_pygame(pv1)
-        p2 = to_pygame(pv2)
-        pygame.draw.lines(screen, line_color, False, [p1, p2])
-
-
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((600, 600))
+    screen = pygame.display.set_mode((1500, 600))
     pygame.display.set_caption("ANW Simulation")
     clock = pygame.time.Clock()
     running = True
 
     space = pymunk.Space()
     space.gravity = (0.0, -900.0)
-    space.add_collision_handler(25, 25, begin=lambda x, y: False)
+    space.add_collision_handler(BODY_COLLISION_TYPE, BODY_COLLISION_TYPE, begin=lambda x, y: False)
 
-    ground = add_ground(space)
+    add_ground(space)
 
     body = HumanBody()
     body.add_to_space(space)
-
-    # test_shapes = add_test_bodies(space)
 
     while running:
         screen.fill(THECOLORS["white"])
@@ -95,9 +46,6 @@ def main():
             if event.type == QUIT:
                 running = False
 
-        # draw_lines(screen, test_shapes, line_color=THECOLORS["blue"])
-
-        draw_lines(screen, (ground,))
         body.draw(screen)
         space.step(1 / 50.0)
         pygame.display.flip()
