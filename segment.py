@@ -2,7 +2,7 @@ import pymunk
 import pymunk.pygame_util
 from pymunk import Vec2d
 from conversion import to_pygame
-from human_body_constants import BODY_COLLISION_TYPE
+from human_body_constants import UPPER_COLLISION_TYPE
 import math
 import pygame.transform
 
@@ -17,7 +17,7 @@ Class that represents one segment of the human body, i.e. upper arm, thigh.
 
 
 class Segment:
-    def __init__(self, mass, length, starting_position, collision_type=BODY_COLLISION_TYPE, angle=0,
+    def __init__(self, mass, length, starting_position, collision_type=UPPER_COLLISION_TYPE, angle=0,
                  image=None):
         """
         :param mass: mass in kilograms

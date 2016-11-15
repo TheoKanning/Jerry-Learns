@@ -5,7 +5,6 @@ from segment import Segment
 
 class HumanBody:
     def __init__(self):
-
         # Torso
         self.torso = Segment(body.TORSO_MASS, body.TORSO_LENGTH, body.TORSO_POSITION, image=body.TORSO_IMAGE)
 
@@ -45,11 +44,13 @@ class HumanBody:
 
         left_leg_angle = self.left_thigh.get_angle() + body.LEFT_KNEE_STARTING_ANGLE
         self.left_leg = Segment(body.LEG_MASS, body.LEG_LENGTH, self.left_thigh.get_end_point(),
+                                collision_type=body.LOWER_COLLISION_TYPE,
                                 angle=left_leg_angle,
                                 image=body.LEG_IMAGE)
 
         left_foot_angle = self.left_leg.get_angle() + body.LEFT_ANKLE_STARTING_ANGLE
         self.left_foot = Segment(body.FOOT_MASS, body.FOOT_LENGTH, self.left_leg.get_end_point(),
+                                 collision_type=body.LOWER_COLLISION_TYPE,
                                  angle=left_foot_angle,
                                  image=body.FOOT_IMAGE)
         self.left_hip = Joint(self.torso, self.left_thigh, body.HIP_ANGLES)
@@ -64,19 +65,19 @@ class HumanBody:
 
         right_leg_angle = self.right_thigh.get_angle() + body.RIGHT_KNEE_STARTING_ANGLE
         self.right_leg = Segment(body.LEG_MASS, body.LEG_LENGTH, self.right_thigh.get_end_point(),
+                                 collision_type=body.LOWER_COLLISION_TYPE,
                                  angle=right_leg_angle,
                                  image=body.LEG_IMAGE)
 
         right_foot_angle = self.right_leg.get_angle() + body.RIGHT_ANKLE_STARTING_ANGLE
         self.right_foot = Segment(body.FOOT_MASS, body.FOOT_LENGTH, self.right_leg.get_end_point(),
+                                  collision_type=body.LOWER_COLLISION_TYPE,
                                   angle=right_foot_angle,
                                   image=body.FOOT_IMAGE)
 
         self.right_hip = Joint(self.torso, self.right_thigh, body.HIP_ANGLES)
         self.right_knee = Joint(self.right_thigh, self.right_leg, body.KNEE_ANGLES)
         self.right_ankle = Joint(self.right_leg, self.right_foot, body.ANKLE_ANGLES)
-
-        self.count = 0
 
     def draw(self, screen):
         """

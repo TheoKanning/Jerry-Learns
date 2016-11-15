@@ -2,7 +2,9 @@ from math import pi
 import pygame
 
 # Collision Types #
-BODY_COLLISION_TYPE = 25
+UPPER_COLLISION_TYPE = 1
+GROUND_COLLISION_TYPE = 2
+LOWER_COLLISION_TYPE = 3
 
 # Weight Fractions #
 HEAD_WEIGHT_FRACTION = 0.0826
