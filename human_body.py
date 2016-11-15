@@ -196,3 +196,9 @@ class HumanBody:
         self.right_hip.set_rate(rates[7])
         self.right_knee.set_rate(rates[8])
         self.right_ankle.set_rate(rates[9])
+
+    def get_distance(self):
+        """
+        Returns x position of the torso
+        """
+        return self.torso.body.position
