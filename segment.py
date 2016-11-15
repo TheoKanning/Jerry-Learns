@@ -46,7 +46,13 @@ class Segment:
             image = pygame.transform.scale(image, (new_width, int(length * IMAGE_SIZE_RATIO)))
         self.image = image
 
-    def angle(self):
+    def get_rate(self):
+        """
+        :return: angular rate in rad/s
+        """
+        return self.body.angular_velocity
+
+    def get_angle(self):
         """
         Returns the absolute angle of this segment the pymunk coordinate system
         :return: angle in radians

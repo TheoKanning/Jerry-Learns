@@ -20,7 +20,7 @@ class HumanBody:
                                        angle=body.RIGHT_SHOULDER_STARTING_ANGLE,
                                        image=body.UPPER_ARM_IMAGE)
 
-        right_elbow_angle = self.right_upper_arm.angle() + body.RIGHT_ELBOW_STARTING_ANGLE
+        right_elbow_angle = self.right_upper_arm.get_angle() + body.RIGHT_ELBOW_STARTING_ANGLE
         self.right_forearm = Segment(body.FOREARM_MASS, body.FOREARM_LENGTH, self.right_upper_arm.get_end_point(),
                                      angle=right_elbow_angle, image=body.FOREARM_IMAGE)
 
@@ -32,7 +32,7 @@ class HumanBody:
                                       angle=body.LEFT_SHOULDER_STARTING_ANGLE,
                                       image=body.UPPER_ARM_IMAGE)
 
-        left_elbow_angle = self.left_upper_arm.angle() + body.LEFT_ELBOW_STARTING_ANGLE
+        left_elbow_angle = self.left_upper_arm.get_angle() + body.LEFT_ELBOW_STARTING_ANGLE
         self.left_forearm = Segment(body.FOREARM_MASS, body.FOREARM_LENGTH, self.left_upper_arm.get_end_point(),
                                     angle=left_elbow_angle, image=body.FOREARM_IMAGE)
 
@@ -40,17 +40,17 @@ class HumanBody:
         self.left_elbow = Joint(self.left_upper_arm, self.left_forearm, body.ELBOW_ANGLES)
 
         # Left leg
-        left_thigh_angle = self.torso.angle() + body.LEFT_HIP_STARTING_ANGLE
+        left_thigh_angle = self.torso.get_angle() + body.LEFT_HIP_STARTING_ANGLE
         self.left_thigh = Segment(body.THIGH_MASS, body.THIGH_LENGTH, self.torso.get_end_point(),
                                   angle=left_thigh_angle,
                                   image=body.THIGH_IMAGE)
 
-        left_leg_angle = self.left_thigh.angle() + body.LEFT_KNEE_STARTING_ANGLE
+        left_leg_angle = self.left_thigh.get_angle() + body.LEFT_KNEE_STARTING_ANGLE
         self.left_leg = Segment(body.LEG_MASS, body.LEG_LENGTH, self.left_thigh.get_end_point(),
                                 angle=left_leg_angle,
                                 image=body.LEG_IMAGE)
 
-        left_foot_angle = self.left_leg.angle() + body.LEFT_ANKLE_STARTING_ANGLE
+        left_foot_angle = self.left_leg.get_angle() + body.LEFT_ANKLE_STARTING_ANGLE
         self.left_foot = Segment(body.FOOT_MASS, body.FOOT_LENGTH, self.left_leg.get_end_point(),
                                  angle=left_foot_angle,
                                  image=body.FOOT_IMAGE)
@@ -59,17 +59,17 @@ class HumanBody:
         self.left_ankle = Joint(self.left_leg, self.left_foot, body.ANKLE_ANGLES)
 
         # Right leg
-        right_thigh_angle = self.torso.angle() + body.RIGHT_HIP_STARTING_ANGLE
+        right_thigh_angle = self.torso.get_angle() + body.RIGHT_HIP_STARTING_ANGLE
         self.right_thigh = Segment(body.THIGH_MASS, body.THIGH_LENGTH, self.torso.get_end_point(),
                                    angle=right_thigh_angle,
                                    image=body.THIGH_IMAGE)
 
-        right_leg_angle = self.right_thigh.angle() + body.RIGHT_KNEE_STARTING_ANGLE
+        right_leg_angle = self.right_thigh.get_angle() + body.RIGHT_KNEE_STARTING_ANGLE
         self.right_leg = Segment(body.LEG_MASS, body.LEG_LENGTH, self.right_thigh.get_end_point(),
                                  angle=right_leg_angle,
                                  image=body.LEG_IMAGE)
 
-        right_foot_angle = self.right_leg.angle() + body.RIGHT_ANKLE_STARTING_ANGLE
+        right_foot_angle = self.right_leg.get_angle() + body.RIGHT_ANKLE_STARTING_ANGLE
         self.right_foot = Segment(body.FOOT_MASS, body.FOOT_LENGTH, self.right_leg.get_end_point(),
                                   angle=right_foot_angle,
                                   image=body.FOOT_IMAGE)
@@ -154,3 +154,54 @@ class HumanBody:
         self.right_hip.add_to_space(space)
         self.right_knee.add_to_space(space)
         self.right_ankle.add_to_space(space)
+
+    def get_state(self):
+        """
+        Returns an array of all body states
+        :return:
+        """
+        state = [self.torso.get_angle(),
+                 self.torso.get_rate(),
+                 self.left_shoulder.get_angle(),
+                 self.left_shoulder.get_rate(),
+                 self.left_elbow.get_angle(),
+                 self.left_elbow.get_rate(),
+                 self.right_shoulder.get_angle(),
+                 self.right_shoulder.get_rate(),
+                 self.right_elbow.get_angle(),
+                 self.right_elbow.get_rate(),
+                 self.left_hip.get_angle(),
+                 self.left_hip.get_rate(),
+                 self.left_knee.get_angle(),
+                 self.left_knee.get_rate(),
+                 self.left_ankle.get_angle(),
+                 self.left_ankle.get_rate(),
+                 self.right_hip.get_angle(),
+                 self.right_hip.get_rate(),
+                 self.right_knee.get_angle(),
+                 self.right_knee.get_rate(),
+                 self.right_ankle.get_angle(),
+                 self.right_ankle.get_rate()]
+
+        return state
+
+    def set_rates(self, rates):
+        """
+        Takes an array of length 10 and sets the joint rates
+        :param rates: array of length 10 containing rates from -1 to 1
+        """
+
+        if len(rates) is not 10:
+            print "Rate array is not length 10"
+            return
+
+        self.left_shoulder.set_rate(rates[0])
+        self.left_elbow.set_rate(rates[1])
+        self.right_shoulder.set_rate(rates[2])
+        self.right_elbow.set_rate(rates[3])
+        self.left_hip.set_rate(rates[4])
+        self.left_knee.set_rate(rates[5])
+        self.left_ankle.set_rate(rates[6])
+        self.right_hip.set_rate(rates[7])
+        self.right_knee.set_rate(rates[8])
+        self.right_ankle.set_rate(rates[9])

@@ -59,4 +59,4 @@ class Joint:
         upside down when they overlap
         :return: difference in radians
         """
-        return self.body_a.angle - self.body_b.angle + math.pi
+        return self.body_a.get_angle - self.body_b.get_angle + math.pi
