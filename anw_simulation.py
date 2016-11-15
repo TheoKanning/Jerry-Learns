@@ -19,6 +19,7 @@ body_hit_ground = False
 
 screen = pygame.display.set_mode((1500, 600))
 
+NUM_GENERATIONS = 5
 generation = 0
 individual_number = 0
 population_size = 0
@@ -64,7 +65,7 @@ def draw_text(screen, text_list):
     :param screen: pygame screen
     :param text_list: list of string to draw
     """
-    font = Font(None, 24)
+    font = Font(None, 36)
     offset = 8
     for text in text_list:
         surface = font.render(text, 1, (0, 0, 0))
@@ -119,7 +120,7 @@ def evaluate_network(network):
         body.set_rates(outputs)
 
         current_distance = body.get_distance()
-        text_list = ["Generation: {}".format(generation),
+        text_list = ["Generation: {}/{}".format(generation, NUM_GENERATIONS),
                      "Individual: {}/{}".format(individual_number, population_size),
                      "Max Distance: {:.0f}".format(max_fitness),
                      "Current distance: {:.0f}".format(current_distance)]
@@ -141,7 +142,7 @@ def main():
 
     config_path = os.path.join(local_dir, 'neat_config')
     pop = population.Population(config_path)
-    pop.run(population_fitness, 5)
+    pop.run(population_fitness, NUM_GENERATIONS)
 
 
 if __name__ == '__main__':
