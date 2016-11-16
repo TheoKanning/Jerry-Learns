@@ -28,7 +28,7 @@ class Joint:
         if max_force is not None:
             self.motor.max_force = max_force
         else:
-            self.motor.max_force = 5000000  # High enough to be strong but won't break rotary limit constraints
+            self.motor.max_force = 1000000  # High enough to be strong but won't break rotary limit constraints
 
     def add_to_space(self, space):
         """

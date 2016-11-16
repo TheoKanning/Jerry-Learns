@@ -35,7 +35,7 @@ FOOT_STARTING_HEIGHT_FRACTION = 0
 NECK_ANGLES = 0, 0
 ELBOW_ANGLES = 0, 3 * pi / 4
 SHOULDER_ANGLES = -pi / 2, pi
-HIP_ANGLES = -pi / 8, 2 * pi / 3
+HIP_ANGLES = -pi / 8, pi / 3
 KNEE_ANGLES = -2 * pi / 3, 0
 ANKLE_ANGLES = 0, 2 * pi / 3
 
