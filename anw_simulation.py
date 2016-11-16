@@ -14,6 +14,9 @@ from neat import nn, population
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
 
+MAX_SIM_TIME = 10000  # ten seconds for now
+FALL_SIM_TIME = 500  # continue simulating for half second after a fall
+
 body_hit_ground = False
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -130,31 +133,38 @@ def evaluate_network(network):
     current_distance = 0
 
     start_time = pygame.time.get_ticks()
+    fall_time = None
 
     while running:
         screen.fill(THECOLORS["white"])
+        current_time = pygame.time.get_ticks()
 
         for event in pygame.event.get():
             if event.type == QUIT:
                 running = False
 
         if body_hit_ground:
-            running = False
+            if fall_time is None:
+                fall_time = current_time
+            elif current_time - fall_time > FALL_SIM_TIME:
+                running = False
+        else:
+            # only count distance before fall
+            current_distance = body.get_distance()
 
-        if pygame.time.get_ticks() - start_time > 10000:
+        # maximum sim time of ten seconds for now
+        if current_time - start_time > MAX_SIM_TIME:
             running = False
 
         inputs = body.get_state()
         outputs = network.serial_activate(inputs)
         body.set_rates(outputs)
 
-        current_distance = body.get_distance()
-
         draw_stats()
         draw_vertical_line(max_distance)
         draw_vertical_line(current_distance)
-
         body.draw(screen)
+
         space.step(1 / 50.0)
         pygame.display.flip()
         clock.tick(50)
@@ -164,7 +174,7 @@ def evaluate_network(network):
 
 def main():
     pygame.init()
-    pygame.display.set_caption("ANW Simulation")
+    pygame.display.set_caption("Jerry's First Steps")
 
     local_dir = os.path.dirname(__file__)
 
