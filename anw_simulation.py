@@ -1,6 +1,4 @@
 import pygame
-
-import math
 import pymunk
 import sys
 import os
@@ -20,10 +18,13 @@ body_hit_ground = False
 screen = pygame.display.set_mode((1500, 600))
 
 NUM_GENERATIONS = 5
-generation = 0
+generation = 1
 individual_number = 0
 population_size = 0
 max_fitness = 0
+last_distance = 0
+
+reporter = population.StatisticsReporter()
 
 
 def add_ground(space):
@@ -59,12 +60,15 @@ def end_simulation(x, y):
     return True
 
 
-def draw_text(screen, text_list):
+def draw_stats():
     """
-    Draws any number of text strings onto the screen
-    :param screen: pygame screen
-    :param text_list: list of string to draw
+    Draws all stats on the screen
     """
+    text_list = ["Generation: {}/{}".format(generation, NUM_GENERATIONS),
+                 "Individual: {}/{}".format(individual_number, population_size),
+                 "Max Distance: {:.0f}".format(max_fitness),
+                 "Last distance: {:.0f}".format(last_distance)]
+
     font = Font(None, 36)
     offset = 8
     for text in text_list:
@@ -78,15 +82,16 @@ def population_fitness(genomes):
     Calculates the fitness score of each genome in a population
     :param genomes: list of genomes
     """
-    global max_fitness, individual_number, population_size
+    global max_fitness, individual_number, population_size, generation, last_distance
     population_size = len(genomes)
     individual_number = 1
     for g in genomes:
         net = nn.create_feed_forward_phenotype(g)
-        fitness = evaluate_network(net)
-        g.fitness = fitness
-        max_fitness = max(fitness, max_fitness)
+        last_distance = evaluate_network(net)
+        g.fitness = last_distance
+        max_fitness = max(last_distance, max_fitness)
         individual_number += 1
+    generation += 1
 
 
 def evaluate_network(network):
@@ -125,11 +130,8 @@ def evaluate_network(network):
         body.set_rates(outputs)
 
         current_distance = body.get_distance()
-        text_list = ["Generation: {}/{}".format(generation, NUM_GENERATIONS),
-                     "Individual: {}/{}".format(individual_number, population_size),
-                     "Max Distance: {:.0f}".format(max_fitness),
-                     "Current distance: {:.0f}".format(current_distance)]
-        draw_text(screen, text_list)
+
+        draw_stats()
 
         body.draw(screen)
         space.step(1 / 50.0)
@@ -147,6 +149,8 @@ def main():
 
     config_path = os.path.join(local_dir, 'neat_config')
     pop = population.Population(config_path)
+    global reporter
+    pop.add_reporter(reporter)
     pop.run(population_fitness, NUM_GENERATIONS)
 
 
