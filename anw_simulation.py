@@ -105,6 +105,8 @@ def evaluate_network(network):
 
     current_distance = 0
 
+    start_time = pygame.time.get_ticks()
+
     while running:
         screen.fill(THECOLORS["white"])
 
@@ -113,6 +115,9 @@ def evaluate_network(network):
                 running = False
 
         if body_hit_ground:
+            running = False
+
+        if pygame.time.get_ticks() - start_time > 10000:
             running = False
 
         inputs = body.get_state()
