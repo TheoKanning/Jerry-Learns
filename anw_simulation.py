@@ -9,19 +9,20 @@ from human_body import HumanBody
 from pygame.locals import *
 from pygame.color import *
 from pygame.font import Font
-from neat import nn, population, statistics
+from neat import nn, population
 
 SCREEN_WIDTH = 1500
+SCREEN_HEIGHT = 600
 
 body_hit_ground = False
 
-screen = pygame.display.set_mode((1500, 600))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-NUM_GENERATIONS = 5
+NUM_GENERATIONS = 100
 generation = 1
-individual_number = 0
+individual_number = 1
 population_size = 0
-max_fitness = 0
+max_distance = 0
 last_distance = 0
 
 reporter = population.StatisticsReporter()
@@ -66,8 +67,8 @@ def draw_stats():
     """
     text_list = ["Generation: {}/{}".format(generation, NUM_GENERATIONS),
                  "Individual: {}/{}".format(individual_number, population_size),
-                 "Max Distance: {:.0f}".format(max_fitness),
-                 "Last distance: {:.0f}".format(last_distance)]
+                 "Max Distance: {:.0f}".format(max_distance),
+                 "Last Distance: {:.0f}".format(last_distance)]
 
     font = Font(None, 36)
     offset = 8
@@ -76,20 +77,38 @@ def draw_stats():
         screen.blit(surface, (8, offset))
         offset += font.get_height()
 
+    # Show last five generations
+    offset = 8
+    fitness_history = reporter.get_average_fitness()
+    start_generation = max(0, len(fitness_history) - 5)
+    for gen, fitness in enumerate(fitness_history[-5:]):
+        text = "Generation {} Average: {:.0f}".format(gen + start_generation, fitness)
+        surface = font.render(text, 1, (0, 0, 0))
+        screen.blit(surface, (300, offset))
+        offset += font.get_height()
+
+
+def draw_vertical_line(x_pos):
+    """
+    Draws a vertical line at the specified position
+    :param x_pos: the x coordinate of this line
+    """
+    pygame.draw.line(screen, (0, 0, 0), (x_pos, 0), (x_pos, SCREEN_HEIGHT))
+
 
 def population_fitness(genomes):
     """
     Calculates the fitness score of each genome in a population
     :param genomes: list of genomes
     """
-    global max_fitness, individual_number, population_size, generation, last_distance
+    global max_distance, individual_number, population_size, generation, last_distance
     population_size = len(genomes)
     individual_number = 1
     for g in genomes:
         net = nn.create_feed_forward_phenotype(g)
         last_distance = evaluate_network(net)
         g.fitness = last_distance
-        max_fitness = max(last_distance, max_fitness)
+        max_distance = max(last_distance, max_distance)
         individual_number += 1
     generation += 1
 
@@ -132,6 +151,8 @@ def evaluate_network(network):
         current_distance = body.get_distance()
 
         draw_stats()
+        draw_vertical_line(max_distance)
+        draw_vertical_line(current_distance)
 
         body.draw(screen)
         space.step(1 / 50.0)
