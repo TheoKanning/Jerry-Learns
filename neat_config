@@ -10,14 +10,14 @@ input_nodes          = 22
 hidden_nodes         = 10
 output_nodes         = 10
 initial_connection   = fully_connected
-max_weight           = 30
-min_weight           = -30
+max_weight           = .1
+min_weight           = -.1
 feedforward          = 1
 activation_functions = sigmoid
-weight_stdev         = 1.0
+weight_stdev         = 0.05
 
 [genetic]
-pop_size                = 5
+pop_size                = 100
 max_fitness_threshold   = 1500
 prob_add_conn           = 0.988
 prob_add_node           = 0.085

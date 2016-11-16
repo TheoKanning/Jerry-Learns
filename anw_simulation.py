@@ -158,6 +158,7 @@ def evaluate_network(network):
 
         inputs = body.get_state()
         outputs = network.serial_activate(inputs)
+        outputs = [x * 2 - 1 for x in outputs]
         body.set_rates(outputs)
 
         draw_stats()
