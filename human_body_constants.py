@@ -84,10 +84,10 @@ LEG_POSITION = STARTING_X_POSITION, LEG_LENGTH / 2 + STARTING_Y_POSITION
 FOOT_POSITION = STARTING_X_POSITION + FOOT_LENGTH / 2, STARTING_Y_POSITION
 
 # Images
-TORSO_IMAGE = pygame.image.load("jerry/torso.png")
-HEAD_IMAGE = pygame.image.load("jerry/head.png")
-UPPER_ARM_IMAGE = pygame.image.load("jerry/upper_arm.png")
-FOREARM_IMAGE = pygame.image.load("jerry/forearm.png")
-THIGH_IMAGE = pygame.image.load("jerry/thigh.png")
-LEG_IMAGE = pygame.image.load("jerry/leg.png")
-FOOT_IMAGE = pygame.image.load("jerry/foot.png")
+TORSO_IMAGE = pygame.image.load("jerry/torso.bmp")
+HEAD_IMAGE = pygame.image.load("jerry/head.bmp")
+UPPER_ARM_IMAGE = pygame.image.load("jerry/upper_arm.bmp")
+FOREARM_IMAGE = pygame.image.load("jerry/forearm.bmp")
+THIGH_IMAGE = pygame.image.load("jerry/thigh.bmp")
+LEG_IMAGE = pygame.image.load("jerry/leg.bmp")
+FOOT_IMAGE = pygame.image.load("jerry/foot.bmp")
