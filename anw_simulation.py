@@ -38,9 +38,7 @@ def add_ground(space):
     :param space: pymunk space
     :return: line segment
     """
-    line_body = pymunk.Body()
-    line_body.position = (0, 0)
-    segment = pymunk.Segment(line_body, (-300, 0), (SCREEN_WIDTH, 0), 5)
+    segment = pymunk.Segment(space.static_body, (-300, 0), (SCREEN_WIDTH, 0), 5)
     segment.friction = 1
     segment.collision_type = GROUND_COLLISION_TYPE
     space.add(segment)
@@ -53,13 +51,16 @@ def set_collision_handlers(space):
     If upper body touches ground, end the simulation
     :param space: pymunk space
     """
-    space.add_collision_handler(UPPER_COLLISION_TYPE, UPPER_COLLISION_TYPE, begin=lambda x, y: False)
-    space.add_collision_handler(LOWER_COLLISION_TYPE, UPPER_COLLISION_TYPE, begin=lambda x, y: False)
-    space.add_collision_handler(LOWER_COLLISION_TYPE, LOWER_COLLISION_TYPE, begin=lambda x, y: False)
-    space.add_collision_handler(UPPER_COLLISION_TYPE, GROUND_COLLISION_TYPE, begin=end_simulation)
+    def dont_collide(x, y, z):
+        return False
+
+    space.add_collision_handler(UPPER_COLLISION_TYPE, UPPER_COLLISION_TYPE).begin = dont_collide
+    space.add_collision_handler(LOWER_COLLISION_TYPE, UPPER_COLLISION_TYPE).begin = dont_collide
+    space.add_collision_handler(LOWER_COLLISION_TYPE, LOWER_COLLISION_TYPE).begin = dont_collide
+    space.add_collision_handler(UPPER_COLLISION_TYPE, GROUND_COLLISION_TYPE).begin = end_simulation
 
 
-def end_simulation(x, y):
+def end_simulation(x, y, z):
     global body_hit_ground
     body_hit_ground = True
     return True
@@ -132,9 +133,8 @@ def evaluate_network(network):
     body = HumanBody()
     body.add_to_space(space)
 
-    start_distance = body.get_distance()
-    current_scaled_distance = start_distance
-    max_distance = start_distance
+    current_scaled_distance = 0
+    max_distance = 0
 
     start_time = pygame.time.get_ticks()
     fall_time = None
@@ -177,7 +177,7 @@ def evaluate_network(network):
         pygame.display.flip()
         clock.tick(50)
 
-    return current_scaled_distance - start_distance
+    return current_scaled_distance
 
 
 def main():

@@ -28,7 +28,7 @@ class Segment:
         :param image: pygame surface
         :return: nothing
         """
-        inertia = pymunk.moment_for_segment(mass, (length / 2, 0), (-length / 2, 0))
+        inertia = pymunk.moment_for_segment(mass, (length / 2, 0), (-length / 2, 0), 1)
 
         self.body = pymunk.Body(mass, inertia)
         self.length = length
