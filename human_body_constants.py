@@ -5,11 +5,11 @@ WALKING_START = False
 
 # Size and Weight Constants
 TOTAL_MASS = 80  # Made up units
-TOTAL_HEIGHT = 300  # Pygame pixels
+TOTAL_HEIGHT = 350  # Pygame pixels
 STARTING_X_POSITION = 100
 STARTING_Y_POSITION = 40
 if WALKING_START is False:
-    STARTING_Y_POSITION += 15
+    STARTING_Y_POSITION += 20
 
 # Weight Fractions #
 HEAD_WEIGHT_FRACTION = 0.0826
@@ -25,8 +25,8 @@ HEAD_HEIGHT_FRACTION = 0.2  # Larger for cartoon, anatomically correct is 0.1075
 TORSO_HEIGHT_FRACTION = 0.3
 UPPER_ARM_HEIGHT_FRACTION = 0.172
 FOREARM_HEIGHT_FRACTION = 0.157 + 0.057  # Including hand
-THIGH_HEIGHT_FRACTION = 0.232
-LEG_HEIGHT_FRACTION = 0.247
+THIGH_HEIGHT_FRACTION = 0.25  # standard is .232
+LEG_HEIGHT_FRACTION = 0.23  # standard is .247
 FOOT_HEIGHT_FRACTION = 0.1  # Counts foot length, not height
 
 # Starting Height Fractions #

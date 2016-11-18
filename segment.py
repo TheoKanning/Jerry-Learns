@@ -9,7 +9,7 @@ import pygame.transform
 SEGMENT_WIDTH = 5
 FRICTION = 1
 
-IMAGE_SIZE_RATIO = 1.3
+IMAGE_SIZE_RATIO = 1.15
 
 """
 Class that represents one segment of the human body, i.e. upper arm, thigh.
