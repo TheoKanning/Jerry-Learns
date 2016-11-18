@@ -1,3 +1,5 @@
+import math
+
 import human_body_constants as body
 from joint import Joint
 from segment import Segment
@@ -202,3 +204,14 @@ class HumanBody:
         Returns x position of the torso
         """
         return self.torso.body.position[0]
+
+    def get_angle_score(self):
+        """
+        Returns a multiplier based on the current torso angle, staying vertical gives a higher angle
+        :return: fraction from 0 to 1
+        """
+        angle = abs(self.torso.get_angle())
+        if angle > math.pi / 4:
+            return 0
+        else:
+            return math.cos(2 * angle)

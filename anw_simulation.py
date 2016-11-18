@@ -26,8 +26,8 @@ NUM_GENERATIONS = 100
 generation = 1
 individual_number = 1
 population_size = 0
-max_distance = 0
-last_distance = 0
+max_fitness = 0
+last_fitness = 0
 
 reporter = population.StatisticsReporter()
 
@@ -69,10 +69,10 @@ def draw_stats():
     """
     Draws all stats on the screen
     """
-    text_list = ["Generation: {}/{}".format(generation, NUM_GENERATIONS),
-                 "Individual: {}/{}".format(individual_number, population_size),
-                 "Max Distance: {:.0f}".format(max_distance),
-                 "Last Distance: {:.0f}".format(last_distance)]
+    text_list = ["Generation: {}".format(generation),
+                 "Individual: {}".format(individual_number),
+                 "Max Fitness: {:.0f}".format(max_fitness),
+                 "Last Fitness: {:.0f}".format(last_fitness)]
 
     font = Font(None, 36)
     offset = 8
@@ -106,14 +106,14 @@ def population_fitness(genomes):
     Calculates the fitness score of each genome in a population
     :param genomes: list of genomes
     """
-    global max_distance, individual_number, population_size, generation, last_distance
+    global max_fitness, individual_number, population_size, generation, last_fitness
     population_size = len(genomes)
     individual_number = 1
     for g in genomes:
         net = nn.create_feed_forward_phenotype(g)
-        last_distance = evaluate_network(net)
-        g.fitness = last_distance
-        max_distance = max(last_distance, max_distance)
+        last_fitness = evaluate_network(net)
+        g.fitness = last_fitness
+        max_fitness = max(last_fitness, max_fitness)
         individual_number += 1
     generation += 1
 
@@ -132,7 +132,9 @@ def evaluate_network(network):
     body = HumanBody()
     body.add_to_space(space)
 
-    current_distance = 0
+    start_distance = body.get_distance()
+    current_scaled_distance = start_distance
+    max_distance = start_distance
 
     start_time = pygame.time.get_ticks()
     fall_time = None
@@ -150,9 +152,11 @@ def evaluate_network(network):
                 fall_time = current_time
             elif current_time - fall_time > FALL_SIM_TIME:
                 running = False
-        else:
+        elif body.get_distance() > max_distance:
+            # take distance improvement and reward staying vertical
             # only count distance before fall
-            current_distance = body.get_distance()
+            current_scaled_distance += body.get_angle_score() * (body.get_distance() - max_distance)
+            max_distance = body.get_distance()
 
         # maximum sim time of ten seconds for now
         if current_time - start_time > MAX_SIM_TIME:
@@ -165,15 +169,15 @@ def evaluate_network(network):
         body.set_rates(outputs)
 
         draw_stats()
-        draw_vertical_line(max_distance)
-        draw_vertical_line(current_distance)
+        draw_vertical_line(max_fitness)
+        draw_vertical_line(current_scaled_distance)
         body.draw(screen)
 
         space.step(1 / 50.0)
         pygame.display.flip()
         clock.tick(50)
 
-    return current_distance
+    return current_scaled_distance - start_distance
 
 
 def main():
