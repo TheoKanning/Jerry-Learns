@@ -10,6 +10,7 @@ from pygame.locals import *
 from pygame.color import *
 from pygame.font import Font
 from neat import nn, population
+from scipy.special import logit
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
@@ -84,6 +85,7 @@ def draw_stats():
     offset = 8
     fitness_history = reporter.get_average_fitness()
     start_generation = max(0, len(fitness_history) - 5)
+    start_generation += 1  # plus one so this is no longer zero-indexed
     for gen, fitness in enumerate(fitness_history[-5:]):
         text = "Generation {} Average: {:.0f}".format(gen + start_generation, fitness)
         surface = font.render(text, 1, (0, 0, 0))
@@ -158,7 +160,8 @@ def evaluate_network(network):
 
         inputs = body.get_state()
         outputs = network.serial_activate(inputs)
-        outputs = [x * 2 - 1 for x in outputs]
+        outputs = [(x - .5) / 3 + 0.5 for x in outputs]  # Shrink input domain by factor of three around 0.5
+        outputs = logit(outputs)
         body.set_rates(outputs)
 
         draw_stats()
