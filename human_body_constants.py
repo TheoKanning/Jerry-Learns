@@ -11,38 +11,59 @@ STARTING_Y_POSITION = 40
 if WALKING_START is False:
     STARTING_Y_POSITION += 20
 
-# Weight Fractions #
-HEAD_WEIGHT_FRACTION = 0.0826
-TORSO_WEIGHT_FRACTION = 0.551
-UPPER_ARM_WEIGHT_FRACTION = 0.0325
-FOREARM_WEIGHT_FRACTION = 0.0187 + 0.0065  # Including hand
-THIGH_WEIGHT_FRACTION = 0.105
-LEG_WEIGHT_FRACTION = 0.0475
-FOOT_WEIGHT_FRACTION = 0.0143
+# Mass Fractions #
+mass_fractions = {
+    "head": 0.0826,
+    "torso": 0.551,
+    "upper_arm": 0.0325,
+    "forearm": 0.0187 + 0.0065,  # Including hand
+    "thigh": 0.105,
+    "calf": 0.0475,
+    "foot": 0.0143
+}
+
+# Segment Masses
+masses = {}
+for segment in mass_fractions:
+    masses[segment] = mass_fractions[segment] * TOTAL_MASS
 
 # Height Fractions #
-HEAD_HEIGHT_FRACTION = 0.2  # Larger for cartoon, anatomically correct is 0.1075
-TORSO_HEIGHT_FRACTION = 0.3
-UPPER_ARM_HEIGHT_FRACTION = 0.172
-FOREARM_HEIGHT_FRACTION = 0.157 + 0.057  # Including hand
-THIGH_HEIGHT_FRACTION = 0.25  # standard is .232
-LEG_HEIGHT_FRACTION = 0.23  # standard is .247
-FOOT_HEIGHT_FRACTION = 0.1  # Counts foot length, not height
+height_fractions = {
+    "head": 0.2,  # Larger for cartoon, anatomically correct is 0.1075
+    "torso": 0.3,
+    "upper_arm": 0.172,
+    "forearm": 0.157 + 0.057,  # Including hand
+    "thigh": 0.25,  # standard is .232
+    "calf": 0.23,  # standard is .247
+    "foot": 0.1  # Counts foot length, not height
+}
+
+# Segment Lengths
+lengths = {}
+for segment in height_fractions:
+    lengths[segment] = height_fractions[segment] * TOTAL_HEIGHT
 
 # Starting Height Fractions #
-SHOULDER_STARTING_HEIGHT_FRACTION = LEG_HEIGHT_FRACTION + THIGH_HEIGHT_FRACTION + TORSO_HEIGHT_FRACTION
-ELBOW_STARTING_HEIGHT_FRACTION = LEG_HEIGHT_FRACTION + THIGH_HEIGHT_FRACTION + TORSO_HEIGHT_FRACTION - UPPER_ARM_HEIGHT_FRACTION / 2
-HIP_STARTING_HEIGHT_FRACTION = LEG_HEIGHT_FRACTION + THIGH_HEIGHT_FRACTION
-KNEE_STARTING_HEIGHT_FRACTION = LEG_HEIGHT_FRACTION
-FOOT_STARTING_HEIGHT_FRACTION = 0
+# todo all of these height calculation assume a completely vertical start. They should be calculated dynamically or
+# removed
+SHOULDER_STARTING_HEIGHT_FRACTION = height_fractions["calf"] + height_fractions["thigh"] + height_fractions["torso"]
+HIP_STARTING_HEIGHT_FRACTION = height_fractions["calf"] + height_fractions["thigh"]
+
+# Starting Positions
+HEAD_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * SHOULDER_STARTING_HEIGHT_FRACTION + lengths[
+    "head"] / 2 + STARTING_Y_POSITION - 12  # subtract to prevent weird head bounce at start
+TORSO_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTION + lengths[
+    "torso"] / 2 + STARTING_Y_POSITION
 
 # Joint Constraints #
-NECK_ANGLES = 0, 0
-ELBOW_ANGLES = 0, 3 * pi / 4
-SHOULDER_ANGLES = -pi / 2, pi
-HIP_ANGLES = -pi / 8, pi / 3
-KNEE_ANGLES = -2 * pi / 3, 0
-ANKLE_ANGLES = 0, 2 * pi / 3
+ranges = {
+    "neck": (0, 0),
+    "elbow": (0, 3 * pi / 4),
+    "shoulder": (-pi / 2, pi),
+    "hip": (-pi / 8, pi / 3),
+    "knee": (-2 * pi / 3, 0),
+    "ankle": (0, 2 * pi / 3)
+}
 
 # Joint Starting Angles #
 if WALKING_START:
@@ -70,41 +91,45 @@ else:
     RIGHT_KNEE_STARTING_ANGLE = 0
     RIGHT_ANKLE_STARTING_ANGLE = pi / 2
 
-# Segment Masses
-HEAD_MASS = TOTAL_MASS * HEAD_WEIGHT_FRACTION
-UPPER_ARM_MASS = TOTAL_MASS * UPPER_ARM_WEIGHT_FRACTION
-FOREARM_MASS = TOTAL_MASS * FOREARM_WEIGHT_FRACTION
-TORSO_MASS = TOTAL_MASS * TORSO_WEIGHT_FRACTION
-THIGH_MASS = TOTAL_MASS * THIGH_WEIGHT_FRACTION
-LEG_MASS = TOTAL_MASS * LEG_WEIGHT_FRACTION
-FOOT_MASS = TOTAL_MASS * FOOT_WEIGHT_FRACTION
-
-# Segment Lengths
-HEAD_LENGTH = HEAD_HEIGHT_FRACTION * TOTAL_HEIGHT
-UPPER_ARM_LENGTH = UPPER_ARM_HEIGHT_FRACTION * TOTAL_HEIGHT
-FOREARM_LENGTH = FOREARM_HEIGHT_FRACTION * TOTAL_HEIGHT
-TORSO_LENGTH = TORSO_HEIGHT_FRACTION * TOTAL_HEIGHT
-THIGH_LENGTH = THIGH_HEIGHT_FRACTION * TOTAL_HEIGHT
-LEG_LENGTH = LEG_HEIGHT_FRACTION * TOTAL_HEIGHT
-FOOT_LENGTH = FOOT_HEIGHT_FRACTION * TOTAL_HEIGHT
-
-# Starting Positions
-HEAD_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * SHOULDER_STARTING_HEIGHT_FRACTION + HEAD_LENGTH / 2 + STARTING_Y_POSITION - 12  # subtract to prevent weird head bounce at start
-TORSO_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTION + TORSO_LENGTH / 2 + STARTING_Y_POSITION
-THIGH_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * KNEE_STARTING_HEIGHT_FRACTION + THIGH_LENGTH / 2 + STARTING_Y_POSITION
-LEG_POSITION = STARTING_X_POSITION, LEG_LENGTH / 2 + STARTING_Y_POSITION
-FOOT_POSITION = STARTING_X_POSITION + FOOT_LENGTH / 2, STARTING_Y_POSITION
-
 # Collision Types #
 UPPER_COLLISION_TYPE = 1
 GROUND_COLLISION_TYPE = 2
 LOWER_COLLISION_TYPE = 3
 
+collision_types = {
+    "torso": UPPER_COLLISION_TYPE,
+    "head": UPPER_COLLISION_TYPE,
+    "upper_arm": UPPER_COLLISION_TYPE,
+    "forearm": UPPER_COLLISION_TYPE,
+    "thigh": UPPER_COLLISION_TYPE,
+    "calf": LOWER_COLLISION_TYPE,
+    "foot": LOWER_COLLISION_TYPE
+}
+
 # Images
-TORSO_IMAGE = pygame.image.load("jerry/torso.bmp")
-HEAD_IMAGE = pygame.image.load("jerry/head.bmp")
-UPPER_ARM_IMAGE = pygame.image.load("jerry/upper_arm.bmp")
-FOREARM_IMAGE = pygame.image.load("jerry/forearm.bmp")
-THIGH_IMAGE = pygame.image.load("jerry/thigh.bmp")
-LEG_IMAGE = pygame.image.load("jerry/leg.bmp")
-FOOT_IMAGE = pygame.image.load("jerry/foot.bmp")
+images = {
+    "torso": pygame.image.load("jerry/torso.bmp"),
+    "head": pygame.image.load("jerry/head.bmp"),
+    "upper_arm": pygame.image.load("jerry/upper_arm.bmp"),
+    "forearm": pygame.image.load("jerry/forearm.bmp"),
+    "thigh": pygame.image.load("jerry/thigh.bmp"),
+    "calf": pygame.image.load("jerry/leg.bmp"),
+    "foot": pygame.image.load("jerry/foot.bmp")
+}
+
+
+class SegmentInfo:
+    """
+    All starting info for a body segment
+    """
+
+    def __init__(self, mass, length, image, collision_type):
+        self.mass = mass
+        self.length = length
+        self.image = image
+        self.collision_type = collision_type
+
+
+segments = {}
+for key in mass_fractions:
+    segments[key] = SegmentInfo(masses[key], lengths[key], images[key], collision_types[key])

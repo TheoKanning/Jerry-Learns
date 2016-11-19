@@ -2,7 +2,6 @@ import pymunk
 import pymunk.pygame_util
 from pymunk import Vec2d
 from conversion import to_pygame
-from human_body_constants import UPPER_COLLISION_TYPE
 import math
 import pygame.transform
 
@@ -17,29 +16,27 @@ Class that represents one segment of the human body, i.e. upper arm, thigh.
 
 
 class Segment:
-    def __init__(self, mass, length, starting_position, collision_type=UPPER_COLLISION_TYPE, angle=0,
-                 image=None):
+    def __init__(self, segment_info, starting_position, angle=0,):
         """
-        :param mass: mass in kilograms
-        :param length: length in meters
+        :param segment_info: SegmentInfo object containing all pre-defined segment constants
         :param starting_position: (x, y) tuple of location of attachment point
         :param angle: angle in radians relative to vertical, in absolute coordinates
-        :param collision_type: enumerated integer that determines collision behavior
-        :param image: pygame surface
         :return: nothing
         """
-        inertia = pymunk.moment_for_segment(mass, (length / 2, 0), (-length / 2, 0), 1)
+        length = segment_info.length
+        inertia = pymunk.moment_for_segment(segment_info.mass, (length / 2, 0), (-length / 2, 0), 1)
 
-        self.body = pymunk.Body(mass, inertia)
+        self.body = pymunk.Body(segment_info.mass, inertia)
         self.length = length
         x = length * math.sin(angle)
         y = -length * math.cos(angle)
         self.body.position = (starting_position[0] + x / 2, starting_position[1] + y / 2)
         self.body.angle = angle
         self.shape = pymunk.Segment(self.body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
-        self.shape.collision_type = collision_type
+        self.shape.collision_type = segment_info.collision_type
         self.shape.friction = FRICTION
 
+        image = segment_info.image
         if image is not None:
             ratio = length / image.get_height() * IMAGE_SIZE_RATIO
             new_width = int(image.get_width() * ratio)

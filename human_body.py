@@ -1,6 +1,8 @@
 import math
 
 import human_body_constants as body
+from human_body_constants import ranges
+from human_body_constants import segments
 from joint import Joint
 from segment import Segment
 
@@ -8,78 +10,59 @@ from segment import Segment
 class HumanBody:
     def __init__(self):
         # Torso
-        self.torso = Segment(body.TORSO_MASS, body.TORSO_LENGTH, body.TORSO_POSITION, image=body.TORSO_IMAGE)
+        self.torso = Segment(segments["torso"], body.TORSO_POSITION)
 
         # Head
-        self.head = Segment(body.HEAD_MASS, body.HEAD_LENGTH, body.HEAD_POSITION, image=body.HEAD_IMAGE)
-        self.neck = Joint(self.head, self.torso, body.NECK_ANGLES)
+        self.head = Segment(segments["head"], body.HEAD_POSITION)
+        self.neck = Joint(self.head, self.torso, ranges["neck"])
 
         # Right arm
-        self.right_upper_arm = Segment(body.UPPER_ARM_MASS, body.UPPER_ARM_LENGTH, self.torso.get_start_point(),
-                                       angle=body.RIGHT_SHOULDER_STARTING_ANGLE,
-                                       image=body.UPPER_ARM_IMAGE)
+        self.right_upper_arm = Segment(segments["upper_arm"], self.torso.get_start_point(),
+                                       angle=body.RIGHT_SHOULDER_STARTING_ANGLE)
 
         right_elbow_angle = self.right_upper_arm.get_angle() + body.RIGHT_ELBOW_STARTING_ANGLE
-        self.right_forearm = Segment(body.FOREARM_MASS, body.FOREARM_LENGTH, self.right_upper_arm.get_end_point(),
-                                     angle=right_elbow_angle, image=body.FOREARM_IMAGE)
+        self.right_forearm = Segment(segments["forearm"], self.right_upper_arm.get_end_point(), angle=right_elbow_angle)
 
-        self.right_shoulder = Joint(self.torso, self.right_upper_arm, body.SHOULDER_ANGLES, segment_a_end=False)
-        self.right_elbow = Joint(self.right_upper_arm, self.right_forearm, body.ELBOW_ANGLES)
+        self.right_shoulder = Joint(self.torso, self.right_upper_arm, ranges["shoulder"], segment_a_end=False)
+        self.right_elbow = Joint(self.right_upper_arm, self.right_forearm, ranges["elbow"])
 
         # Left arm
-        self.left_upper_arm = Segment(body.UPPER_ARM_MASS, body.UPPER_ARM_LENGTH, self.torso.get_start_point(),
-                                      angle=body.LEFT_SHOULDER_STARTING_ANGLE,
-                                      image=body.UPPER_ARM_IMAGE)
+        self.left_upper_arm = Segment(segments["upper_arm"], self.torso.get_start_point(),
+                                      angle=body.LEFT_SHOULDER_STARTING_ANGLE, )
 
         left_elbow_angle = self.left_upper_arm.get_angle() + body.LEFT_ELBOW_STARTING_ANGLE
-        self.left_forearm = Segment(body.FOREARM_MASS, body.FOREARM_LENGTH, self.left_upper_arm.get_end_point(),
-                                    angle=left_elbow_angle, image=body.FOREARM_IMAGE)
+        self.left_forearm = Segment(segments["forearm"], self.left_upper_arm.get_end_point(), angle=left_elbow_angle)
 
-        self.left_shoulder = Joint(self.torso, self.left_upper_arm, body.SHOULDER_ANGLES, segment_a_end=False)
-        self.left_elbow = Joint(self.left_upper_arm, self.left_forearm, body.ELBOW_ANGLES)
+        self.left_shoulder = Joint(self.torso, self.left_upper_arm, ranges["shoulder"], segment_a_end=False)
+        self.left_elbow = Joint(self.left_upper_arm, self.left_forearm, ranges["elbow"])
 
         # Left leg
         left_thigh_angle = self.torso.get_angle() + body.LEFT_HIP_STARTING_ANGLE
-        self.left_thigh = Segment(body.THIGH_MASS, body.THIGH_LENGTH, self.torso.get_end_point(),
-                                  angle=left_thigh_angle,
-                                  image=body.THIGH_IMAGE)
+        self.left_thigh = Segment(segments["thigh"], self.torso.get_end_point(), angle=left_thigh_angle, )
 
-        left_leg_angle = self.left_thigh.get_angle() + body.LEFT_KNEE_STARTING_ANGLE
-        self.left_leg = Segment(body.LEG_MASS, body.LEG_LENGTH, self.left_thigh.get_end_point(),
-                                collision_type=body.LOWER_COLLISION_TYPE,
-                                angle=left_leg_angle,
-                                image=body.LEG_IMAGE)
+        left_calf_angle = self.left_thigh.get_angle() + body.LEFT_KNEE_STARTING_ANGLE
+        self.left_calf = Segment(segments["calf"], self.left_thigh.get_end_point(), angle=left_calf_angle)
 
-        left_foot_angle = self.left_leg.get_angle() + body.LEFT_ANKLE_STARTING_ANGLE
-        self.left_foot = Segment(body.FOOT_MASS, body.FOOT_LENGTH, self.left_leg.get_end_point(),
-                                 collision_type=body.LOWER_COLLISION_TYPE,
-                                 angle=left_foot_angle,
-                                 image=body.FOOT_IMAGE)
-        self.left_hip = Joint(self.torso, self.left_thigh, body.HIP_ANGLES)
-        self.left_knee = Joint(self.left_thigh, self.left_leg, body.KNEE_ANGLES)
-        self.left_ankle = Joint(self.left_leg, self.left_foot, body.ANKLE_ANGLES)
+        left_foot_angle = self.left_calf.get_angle() + body.LEFT_ANKLE_STARTING_ANGLE
+        self.left_foot = Segment(segments["foot"], self.left_calf.get_end_point(), angle=left_foot_angle)
+
+        self.left_hip = Joint(self.torso, self.left_thigh, ranges["hip"])
+        self.left_knee = Joint(self.left_thigh, self.left_calf, ranges["knee"])
+        self.left_ankle = Joint(self.left_calf, self.left_foot, ranges["ankle"])
 
         # Right leg
         right_thigh_angle = self.torso.get_angle() + body.RIGHT_HIP_STARTING_ANGLE
-        self.right_thigh = Segment(body.THIGH_MASS, body.THIGH_LENGTH, self.torso.get_end_point(),
-                                   angle=right_thigh_angle,
-                                   image=body.THIGH_IMAGE)
+        self.right_thigh = Segment(segments["thigh"], self.torso.get_end_point(), angle=right_thigh_angle)
 
-        right_leg_angle = self.right_thigh.get_angle() + body.RIGHT_KNEE_STARTING_ANGLE
-        self.right_leg = Segment(body.LEG_MASS, body.LEG_LENGTH, self.right_thigh.get_end_point(),
-                                 collision_type=body.LOWER_COLLISION_TYPE,
-                                 angle=right_leg_angle,
-                                 image=body.LEG_IMAGE)
+        right_calf_angle = self.right_thigh.get_angle() + body.RIGHT_KNEE_STARTING_ANGLE
+        self.right_calf = Segment(segments["calf"], self.right_thigh.get_end_point(), angle=right_calf_angle)
 
-        right_foot_angle = self.right_leg.get_angle() + body.RIGHT_ANKLE_STARTING_ANGLE
-        self.right_foot = Segment(body.FOOT_MASS, body.FOOT_LENGTH, self.right_leg.get_end_point(),
-                                  collision_type=body.LOWER_COLLISION_TYPE,
-                                  angle=right_foot_angle,
-                                  image=body.FOOT_IMAGE)
+        right_foot_angle = self.right_calf.get_angle() + body.RIGHT_ANKLE_STARTING_ANGLE
+        self.right_foot = Segment(segments["foot"], self.right_calf.get_end_point(), angle=right_foot_angle)
 
-        self.right_hip = Joint(self.torso, self.right_thigh, body.HIP_ANGLES)
-        self.right_knee = Joint(self.right_thigh, self.right_leg, body.KNEE_ANGLES)
-        self.right_ankle = Joint(self.right_leg, self.right_foot, body.ANKLE_ANGLES)
+        self.right_hip = Joint(self.torso, self.right_thigh, ranges["hip"])
+        self.right_knee = Joint(self.right_thigh, self.right_calf, ranges["knee"])
+        self.right_ankle = Joint(self.right_calf, self.right_foot, ranges["ankle"])
 
     def draw(self, screen):
         """
@@ -92,12 +75,12 @@ class HumanBody:
         self.left_forearm.draw(screen)
 
         # Left leg
-        self.left_leg.draw(screen)
+        self.left_calf.draw(screen)
         self.left_foot.draw(screen)
         self.left_thigh.draw(screen)
 
         # Right Leg
-        self.right_leg.draw(screen)
+        self.right_calf.draw(screen)
         self.right_foot.draw(screen)
         self.right_thigh.draw(screen)
 
@@ -133,7 +116,7 @@ class HumanBody:
         self.neck.add_to_space(space)
 
         self.left_thigh.add_to_space(space)
-        self.left_leg.add_to_space(space)
+        self.left_calf.add_to_space(space)
         self.left_foot.add_to_space(space)
 
         self.left_hip.add_to_space(space)
@@ -141,7 +124,7 @@ class HumanBody:
         self.left_ankle.add_to_space(space)
 
         self.right_thigh.add_to_space(space)
-        self.right_leg.add_to_space(space)
+        self.right_calf.add_to_space(space)
         self.right_foot.add_to_space(space)
 
         self.right_hip.add_to_space(space)
