@@ -52,6 +52,7 @@ def set_collision_handlers(space):
     If upper body touches ground, end the simulation
     :param space: pymunk space
     """
+
     def dont_collide(x, y, z):
         return False
 
@@ -120,6 +121,18 @@ def population_fitness(genomes):
     generation += 1
 
 
+def scale_outputs(outputs):
+    """
+    Neural network outputs range between 0 and one after sigmoid function. Here we undo the sigmoid function and make
+    the outputs between -1 and 1
+    :param outputs: outputs of neural network
+    :return: scaled outputs that can be used to set body rate
+    """
+    outputs = logit(outputs)
+    outputs = [x/3 for x in outputs]  # scale by factor of 1/4
+    return [max(min(1, x), -1) for x in outputs]  # clamp between -1 and 1
+
+
 def evaluate_network(network):
     clock = pygame.time.Clock()
     running = True
@@ -139,6 +152,8 @@ def evaluate_network(network):
 
     start_time = pygame.time.get_ticks()
     fall_time = None
+
+    initial_outputs = None
 
     while running:
         screen.fill(THECOLORS["white"])
@@ -164,10 +179,11 @@ def evaluate_network(network):
             running = False
 
         inputs = body.get_state()
-        outputs = network.serial_activate(inputs)
-        outputs = [(x - .5) / 3 + 0.5 for x in outputs]  # Shrink input domain by factor of three around 0.5
-        outputs = logit(outputs)
+        outputs = scale_outputs(network.serial_activate(inputs))
         body.set_rates(outputs)
+
+        if initial_outputs is None:
+            initial_outputs = outputs
 
         draw_stats()
         draw_vertical_line(max_fitness + STARTING_X_POSITION)
@@ -177,6 +193,15 @@ def evaluate_network(network):
         space.step(1 / 50.0)
         pygame.display.flip()
         clock.tick(50)
+
+    # uncomment to see how much network outputs are changing
+    # changes = [abs(a - b) for a, b in zip(outputs, initial_outputs)]
+    # print sum(changes) / len(changes)
+    # count = 0
+    # for x in outputs:
+    #     if x > .99 or x < -.99:
+    #         count += 1
+    # print count
 
     return current_scaled_distance - STARTING_X_POSITION
 

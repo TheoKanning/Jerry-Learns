@@ -10,11 +10,11 @@ input_nodes          = 22
 hidden_nodes         = 10
 output_nodes         = 10
 initial_connection   = fs_neat
-max_weight           = 1
-min_weight           = -1
+max_weight           = .1
+min_weight           = -.1
 feedforward          = 1
 activation_functions = sigmoid
-weight_stdev         = 0.25
+weight_stdev         = 0.05
 
 [genetic]
 pop_size                = 100
