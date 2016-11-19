@@ -5,6 +5,7 @@ import os
 from human_body_constants import UPPER_COLLISION_TYPE
 from human_body_constants import LOWER_COLLISION_TYPE
 from human_body_constants import GROUND_COLLISION_TYPE
+from human_body_constants import STARTING_X_POSITION
 from human_body import HumanBody
 from pygame.locals import *
 from pygame.color import *
@@ -133,8 +134,8 @@ def evaluate_network(network):
     body = HumanBody()
     body.add_to_space(space)
 
-    current_scaled_distance = 0
-    max_distance = 0
+    current_scaled_distance = STARTING_X_POSITION
+    max_distance = STARTING_X_POSITION
 
     start_time = pygame.time.get_ticks()
     fall_time = None
@@ -169,7 +170,7 @@ def evaluate_network(network):
         body.set_rates(outputs)
 
         draw_stats()
-        draw_vertical_line(max_fitness)
+        draw_vertical_line(max_fitness + STARTING_X_POSITION)
         draw_vertical_line(current_scaled_distance)
         body.draw(screen)
 
@@ -177,7 +178,7 @@ def evaluate_network(network):
         pygame.display.flip()
         clock.tick(50)
 
-    return current_scaled_distance
+    return current_scaled_distance - STARTING_X_POSITION
 
 
 def main():
