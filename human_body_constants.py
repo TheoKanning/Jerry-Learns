@@ -7,9 +7,9 @@ WALKING_START = False
 TOTAL_MASS = 80  # Made up units
 TOTAL_HEIGHT = 350  # Pygame pixels
 STARTING_X_POSITION = 100
-STARTING_Y_POSITION = 40
+STARTING_Y_POSITION = 0
 if WALKING_START is False:
-    STARTING_Y_POSITION += 20
+    STARTING_Y_POSITION += 10
 
 # Mass Fractions #
 mass_fractions = {
@@ -51,9 +51,9 @@ HIP_STARTING_HEIGHT_FRACTION = height_fractions["calf"] + height_fractions["thig
 
 # Starting Positions
 HEAD_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * SHOULDER_STARTING_HEIGHT_FRACTION + lengths[
-    "head"] / 2 + STARTING_Y_POSITION - 12  # subtract to prevent weird head bounce at start
+    "head"] + STARTING_Y_POSITION  # subtract to prevent weird head bounce at start
 TORSO_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTION + lengths[
-    "torso"] / 2 + STARTING_Y_POSITION
+    "torso"] + STARTING_Y_POSITION
 
 # Joint Constraints #
 ranges = {

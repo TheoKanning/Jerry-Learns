@@ -11,6 +11,7 @@ class HumanBody:
     def __init__(self):
         # Torso
         self.torso = Segment(segments["torso"], body.TORSO_POSITION)
+        self.initial_height = self.torso.body.position[1]
 
         # Head
         self.head = Segment(segments["head"], body.HEAD_POSITION)
@@ -190,11 +191,19 @@ class HumanBody:
 
     def get_angle_score(self):
         """
-        Returns a multiplier based on the current torso angle, staying vertical gives a higher angle
+        Returns a multiplier based on the current torso angle and height, staying vertical and high gives a higher angle
         :return: fraction from 0 to 1
         """
         angle = abs(self.torso.get_angle())
         if angle > math.pi / 4:
             return 0
         else:
-            return math.cos(2 * angle)
+            angle_score = math.cos(2 * angle)
+
+        torso_height = self.torso.body.position[1]
+        if torso_height > self.initial_height:
+            height_score = 1
+        else:
+            height_score = torso_height/self.initial_height
+
+        return angle_score*height_score
