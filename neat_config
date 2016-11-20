@@ -13,7 +13,7 @@ initial_connection   = fs_neat
 max_weight           = 1
 min_weight           = -1
 feedforward          = 1
-activation_functions = sigmoid
+activation_functions = sigmoid identity
 weight_stdev         = 0.25
 
 [genetic]

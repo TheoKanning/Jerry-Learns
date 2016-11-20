@@ -123,14 +123,10 @@ def population_fitness(genomes):
 
 def scale_outputs(outputs):
     """
-    Neural network outputs range between 0 and one after sigmoid function. Here we undo the sigmoid function and make
-    the outputs between -3 and 3
+    Scale neural network outputs between -3 and 3
     :param outputs: outputs of neural network
     :return: scaled outputs that can be used to set body rate
     """
-    outputs = logit(outputs)
-    # return outputs
-    outputs = [x/3 for x in outputs]  # scale by factor of 1/4
     return [max(min(3, x), -3) for x in outputs]  # clamp between -3 and 3
 
 
