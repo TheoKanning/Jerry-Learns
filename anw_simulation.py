@@ -147,7 +147,7 @@ def evaluate_network(network):
     current_scaled_distance = STARTING_X_POSITION
     max_distance = STARTING_X_POSITION
 
-    start_time = pygame.time.get_ticks()
+    last_progress_time = pygame.time.get_ticks()
     fall_time = None
 
     initial_outputs = None
@@ -170,10 +170,9 @@ def evaluate_network(network):
             # only count distance before fall
             current_scaled_distance += body.get_angle_score() * (body.get_distance() - max_distance)
             max_distance = body.get_distance()
-
-        # maximum sim time of ten seconds for now
-        if current_time - start_time > MAX_SIM_TIME:
-            running = False
+            last_progress_time = current_time
+        elif current_time - last_progress_time > 3000:
+            running = False  # end if no progress in last three seconds
 
         inputs = body.get_state()
         outputs = scale_outputs(network.serial_activate(inputs))
