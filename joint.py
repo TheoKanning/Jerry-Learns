@@ -24,12 +24,12 @@ class Joint:
 
         self.pivot = pymunk.PivotJoint(self.body_a, self.body_b, segment_a_position, b.shape.a)
         self.rotary_limit = pymunk.RotaryLimitJoint(self.body_a, self.body_b, angular_range[0], angular_range[1])
-        self.rotary_limit.max_force = 2000000  # finite limit prevents bouncing, double the max motor force
+        self.rotary_limit.max_force = 5000000  # finite limit prevents bouncing, double the max motor force
         self.motor = pymunk.SimpleMotor(self.body_a, self.body_b, 0)
         if max_force is not None:
             self.motor.max_force = max_force
         else:
-            self.motor.max_force = 1000000  # High enough to be strong but won't break rotary limit constraints
+            self.motor.max_force = 2000000  # High enough to be strong but won't break rotary limit constraints
 
     def add_to_space(self, space):
         """

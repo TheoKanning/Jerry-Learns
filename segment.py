@@ -32,6 +32,7 @@ class Segment:
         y = -length * math.cos(angle)
         self.body.position = (starting_position[0] + x / 2, starting_position[1] + y / 2)
         self.body.angle = angle
+        self.body.velocity = segment_info.start_speed
         self.shape = pymunk.Segment(self.body, (0, length / 2), (0, -length / 2), SEGMENT_WIDTH)
         self.shape.collision_type = segment_info.collision_type
         self.shape.friction = FRICTION

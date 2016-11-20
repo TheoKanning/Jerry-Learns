@@ -138,27 +138,28 @@ class HumanBody:
         :return:
         """
         state = [self.torso.get_angle(),
-                 self.torso.get_rate(),
+                 # self.torso.get_rate(),
                  self.left_shoulder.get_angle(),
-                 self.left_shoulder.get_rate(),
+                 # self.left_shoulder.get_rate(),
                  self.left_elbow.get_angle(),
-                 self.left_elbow.get_rate(),
+                 # self.left_elbow.get_rate(),
                  self.right_shoulder.get_angle(),
-                 self.right_shoulder.get_rate(),
+                 # self.right_shoulder.get_rate(),
                  self.right_elbow.get_angle(),
-                 self.right_elbow.get_rate(),
+                 # self.right_elbow.get_rate(),
                  self.left_hip.get_angle(),
-                 self.left_hip.get_rate(),
+                 # self.left_hip.get_rate(),
                  self.left_knee.get_angle(),
-                 self.left_knee.get_rate(),
+                 # self.left_knee.get_rate(),
                  self.left_ankle.get_angle(),
-                 self.left_ankle.get_rate(),
+                 # self.left_ankle.get_rate(),
                  self.right_hip.get_angle(),
-                 self.right_hip.get_rate(),
+                 # self.right_hip.get_rate(),
                  self.right_knee.get_angle(),
-                 self.right_knee.get_rate(),
+                 # self.right_knee.get_rate(),
                  self.right_ankle.get_angle(),
-                 self.right_ankle.get_rate()]
+                 # self.right_ankle.get_rate()
+        ]
 
         return state
 

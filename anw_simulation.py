@@ -129,6 +129,7 @@ def scale_outputs(outputs):
     :return: scaled outputs that can be used to set body rate
     """
     outputs = logit(outputs)
+    # return outputs
     outputs = [x/3 for x in outputs]  # scale by factor of 1/4
     return [max(min(3, x), -3) for x in outputs]  # clamp between -3 and 3
 
@@ -195,13 +196,13 @@ def evaluate_network(network):
         clock.tick(50)
 
     # uncomment to see how much network outputs are changing
-    # changes = [abs(a - b) for a, b in zip(outputs, initial_outputs)]
-    # print sum(changes) / len(changes)
-    # count = 0
-    # for x in outputs:
-    #     if x > .99 or x < -.99:
-    #         count += 1
-    # print count
+    changes = [abs(a - b) for a, b in zip(outputs, initial_outputs)]
+    print sum(changes) / len(changes)
+    count = 0
+    for x in outputs:
+        if x > 2.99 or x < -2.99:
+            count += 1
+    print count
 
     return current_scaled_distance - STARTING_X_POSITION
 

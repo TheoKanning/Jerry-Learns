@@ -1,13 +1,14 @@
 from math import pi
 import pygame
 
-WALKING_START = False
+WALKING_START = True
 
 # Size and Weight Constants
 TOTAL_MASS = 80  # Made up units
 TOTAL_HEIGHT = 350  # Pygame pixels
 STARTING_X_POSITION = 100
 STARTING_Y_POSITION = 0
+STARTING_SPEED = 50, 10  # pixels/sec?
 if WALKING_START is False:
     STARTING_Y_POSITION += 10
 
@@ -72,7 +73,7 @@ if WALKING_START:
     LEFT_ELBOW_STARTING_ANGLE = pi / 4
     RIGHT_SHOULDER_STARTING_ANGLE = pi / 4
     RIGHT_ELBOW_STARTING_ANGLE = pi / 4
-    LEFT_HIP_STARTING_ANGLE = pi / 6
+    LEFT_HIP_STARTING_ANGLE = pi / 8
     LEFT_KNEE_STARTING_ANGLE = - pi / 8
     LEFT_ANKLE_STARTING_ANGLE = pi / 2
     RIGHT_HIP_STARTING_ANGLE = -pi / 8
@@ -128,6 +129,7 @@ class SegmentInfo:
         self.length = length
         self.image = image
         self.collision_type = collision_type
+        self.start_speed = STARTING_SPEED
 
 
 segments = {}
