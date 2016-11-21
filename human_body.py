@@ -196,10 +196,10 @@ class HumanBody:
         :return: fraction from 0 to 1
         """
         angle = abs(self.torso.get_angle())
-        if angle > math.pi / 4:
+        if angle > math.pi / 6:  # 30 degrees
             return 0
         else:
-            angle_score = math.cos(2 * angle)
+            angle_score = math.cos(3 * angle)  # smoothly interpolate between 1 at 0 degrees and 0 at 30 degrees
 
         torso_height = self.torso.body.position[1]
         if torso_height > self.initial_height:
