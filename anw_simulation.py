@@ -124,10 +124,10 @@ def population_fitness(genomes):
 def scale_outputs(outputs):
     """
     Scale neural network outputs between -3 and 3
-    :param outputs: outputs of neural network
+    :param outputs: outputs of neural network, scaled from -1 to 1 from tanh activation
     :return: scaled outputs that can be used to set body rate
     """
-    return [max(min(3, x), -3) for x in outputs]  # clamp between -3 and 3
+    return [3 * x for x in outputs]
 
 
 def evaluate_network(network):

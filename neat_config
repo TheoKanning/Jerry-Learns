@@ -9,11 +9,11 @@ reproduction_type    = DefaultReproduction
 input_nodes          = 11
 hidden_nodes         = 10
 output_nodes         = 10
-initial_connection   = unconnected
-max_weight           = 1
-min_weight           = -1
-feedforward          = 1
-activation_functions = sigmoid identity
+initial_connection   = partial 0.01
+max_weight           = 2
+min_weight           = -2
+feedforward          = 0
+activation_functions = tanh
 weight_stdev         = 0.25
 
 [genetic]
@@ -23,13 +23,13 @@ prob_add_conn           = 0.988
 prob_add_node           = 0.085
 prob_delete_conn        = 0.146
 prob_delete_node        = 0.0352
-prob_mutate_bias        = 0.0509
-bias_mutation_power     = 2.093
-prob_mutate_response    = 0.1
-response_mutation_power = 0.1
+prob_mutate_bias        = 0.5
+bias_mutation_power     = 2
+prob_mutate_response    = 0.5
+response_mutation_power = 2
 prob_mutate_weight      = 0.460
-prob_replace_weight     = 0.0245
-weight_mutation_power   = 0.825
+prob_replace_weight     = 0.05
+weight_mutation_power   = 1
 prob_mutate_activation  = 0.0
 prob_toggle_link        = 0.0138
 reset_on_extinction     = 1
@@ -42,7 +42,7 @@ weight_coefficient      = 0.4
 
 [DefaultStagnation]
 species_fitness_func = mean
-max_stagnation       = 15
+max_stagnation       = 10
 
 [DefaultReproduction]
 elitism              = 1
