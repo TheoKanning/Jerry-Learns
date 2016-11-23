@@ -40,7 +40,7 @@ def add_ground(space):
     :return: line segment
     """
     segment = pymunk.Segment(space.static_body, (-300, 0), (SCREEN_WIDTH, 0), 5)
-    segment.friction = 1
+    segment.friction = .75
     segment.collision_type = GROUND_COLLISION_TYPE
     space.add(segment)
     return segment
