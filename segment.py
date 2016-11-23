@@ -6,7 +6,7 @@ import math
 import pygame.transform
 
 SEGMENT_WIDTH = 5
-FRICTION = .75
+FRICTION = .9
 
 IMAGE_SIZE_RATIO = 1.15
 
