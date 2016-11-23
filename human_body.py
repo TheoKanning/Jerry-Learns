@@ -141,11 +141,11 @@ class HumanBody:
                  # self.torso.get_rate(),
                  self.left_shoulder.get_angle(),
                  # self.left_shoulder.get_rate(),
-                 self.left_elbow.get_angle(),
+                 # self.left_elbow.get_angle(),
                  # self.left_elbow.get_rate(),
                  self.right_shoulder.get_angle(),
                  # self.right_shoulder.get_rate(),
-                 self.right_elbow.get_angle(),
+                 # self.right_elbow.get_angle(),
                  # self.right_elbow.get_rate(),
                  self.left_hip.get_angle(),
                  # self.left_hip.get_rate(),
@@ -165,24 +165,22 @@ class HumanBody:
 
     def set_rates(self, rates):
         """
-        Takes an array of length 10 and sets the joint rates
-        :param rates: array of length 10 containing rates from -1 to 1
+        Takes an array of length 8 and sets the joint rates
+        :param rates: array of length 8 containing rates from -3 to 3
         """
 
-        if len(rates) is not 10:
-            print "Rate array is not length 10"
+        if len(rates) is not 8:
+            print "Rate array is not length 8"
             return
 
         self.left_shoulder.set_rate(rates[0])
-        self.left_elbow.set_rate(rates[1])
-        self.right_shoulder.set_rate(rates[2])
-        self.right_elbow.set_rate(rates[3])
-        self.left_hip.set_rate(rates[4])
-        self.left_knee.set_rate(rates[5])
-        self.left_ankle.set_rate(rates[6])
-        self.right_hip.set_rate(rates[7])
-        self.right_knee.set_rate(rates[8])
-        self.right_ankle.set_rate(rates[9])
+        self.right_shoulder.set_rate(rates[1])
+        self.left_hip.set_rate(rates[2])
+        self.left_knee.set_rate(rates[3])
+        self.left_ankle.set_rate(rates[4])
+        self.right_hip.set_rate(rates[5])
+        self.right_knee.set_rate(rates[6])
+        self.right_ankle.set_rate(rates[7])
 
     def get_distance(self):
         """
