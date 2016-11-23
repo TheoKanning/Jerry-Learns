@@ -11,12 +11,11 @@ from pygame.locals import *
 from pygame.color import *
 from pygame.font import Font
 from neat import nn, population
-from scipy.special import logit
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
 
-MAX_SIM_TIME = 10000  # ten seconds for now
+PROGRESS_TIMEOUT = 5000  # end ig no progress is made for five seconds
 FALL_SIM_TIME = 500  # continue simulating for half second after a fall
 
 body_hit_ground = False
@@ -171,7 +170,7 @@ def evaluate_network(network):
             current_scaled_distance += body.get_angle_score() * (body.get_distance() - max_distance)
             max_distance = body.get_distance()
             last_progress_time = current_time
-        elif current_time - last_progress_time > 3000:
+        elif current_time - last_progress_time > PROGRESS_TIMEOUT:
             running = False  # end if no progress in last three seconds
 
         inputs = body.get_state()
