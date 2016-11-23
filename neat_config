@@ -18,7 +18,7 @@ weight_stdev         = 0.25
 
 [genetic]
 pop_size                = 100
-max_fitness_threshold   = 1500
+max_fitness_threshold   = 1200
 prob_add_conn           = 0.988
 prob_add_node           = 0.085
 prob_delete_conn        = 0.146
