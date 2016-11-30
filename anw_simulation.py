@@ -167,7 +167,7 @@ def evaluate_network(network):
         elif body.get_distance() > max_distance:
             # take distance improvement and reward staying vertical
             # only count distance before fall
-            current_scaled_distance += body.get_angle_score() * (body.get_distance() - max_distance)
+            current_scaled_distance += body.get_score_multiplier() * (body.get_distance() - max_distance)
             max_distance = body.get_distance()
             last_progress_time = current_time
         elif current_time - last_progress_time > PROGRESS_TIMEOUT:

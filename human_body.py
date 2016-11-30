@@ -176,10 +176,10 @@ class HumanBody:
         """
         return self.torso.body.position[0]
 
-    def get_angle_score(self):
+    def get_score_multiplier(self):
         """
-        Returns a multiplier based on the current torso angle and height, staying vertical and high gives a higher angle
-        :return: fraction from 0 to 1
+        Returns a multiplier based on the current torso angle and height, staying vertical and high gives a higher score
+        :return: score from 0 to 1
         """
         angle = abs(self.torso.get_angle())
         if angle > math.pi / 6:  # 30 degrees
