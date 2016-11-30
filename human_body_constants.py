@@ -65,6 +65,7 @@ ranges = {
 }
 
 # Joint Starting Angles #
+# todo make a dictionary for these
 if WALKING_START:
     NECK_STARTING_ANGLE = 0
     LEFT_SHOULDER_STARTING_ANGLE = - pi / 4
@@ -91,6 +92,7 @@ else:
     RIGHT_ANKLE_STARTING_ANGLE = pi / 2
 
 # Collision Types #
+# todo make dictionary for these
 UPPER_COLLISION_TYPE = 1
 GROUND_COLLISION_TYPE = 2
 LOWER_COLLISION_TYPE = 3

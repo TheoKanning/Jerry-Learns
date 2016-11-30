@@ -91,5 +91,8 @@ ENV/
 # Pymunk examples
 examples/
 
+# Saved runs
+records/
+
 # Pycharm files
 .idea/

@@ -2,6 +2,7 @@ import pygame
 import pymunk
 import sys
 import os
+import record
 from human_body_constants import UPPER_COLLISION_TYPE
 from human_body_constants import LOWER_COLLISION_TYPE
 from human_body_constants import GROUND_COLLISION_TYPE
@@ -28,6 +29,8 @@ individual_number = 1
 population_size = 0
 max_fitness = 0
 last_fitness = 0
+gen_best_fitness = 0
+gen_best_genome = None
 
 reporter = population.StatisticsReporter()
 
@@ -108,15 +111,24 @@ def population_fitness(genomes):
     Calculates the fitness score of each genome in a population
     :param genomes: list of genomes
     """
-    global max_fitness, individual_number, population_size, generation, last_fitness
+    global max_fitness, individual_number, population_size, generation, last_fitness, gen_best_fitness, gen_best_genome, gen_best_fitness
     population_size = len(genomes)
     individual_number = 1
+    gen_best_fitness = 0
+    gen_best_genome = None
     for g in genomes:
         net = nn.create_feed_forward_phenotype(g)
         last_fitness = evaluate_network(net)
         g.fitness = last_fitness
         max_fitness = max(last_fitness, max_fitness)
+
+        if last_fitness > gen_best_fitness:
+            gen_best_fitness = last_fitness
+            gen_best_genome = g
         individual_number += 1
+
+    record.save_best_genome()
+
     generation += 1
 
 
@@ -204,9 +216,9 @@ def evaluate_network(network):
 def main():
     pygame.init()
     pygame.display.set_caption("Jerry's First Steps")
+    record.create_folder()
 
     local_dir = os.path.dirname(__file__)
-
     config_path = os.path.join(local_dir, 'neat_config')
     pop = population.Population(config_path)
     global reporter
