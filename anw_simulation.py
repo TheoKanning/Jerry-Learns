@@ -29,8 +29,6 @@ individual_number = 1
 population_size = 0
 max_fitness = 0
 last_fitness = 0
-gen_best_fitness = 0
-gen_best_genome = None
 
 reporter = population.StatisticsReporter()
 
@@ -111,23 +109,18 @@ def population_fitness(genomes):
     Calculates the fitness score of each genome in a population
     :param genomes: list of genomes
     """
-    global max_fitness, individual_number, population_size, generation, last_fitness, gen_best_fitness, gen_best_genome, gen_best_fitness
+    global max_fitness, individual_number, population_size, generation, last_fitness
     population_size = len(genomes)
     individual_number = 1
-    gen_best_fitness = 0
-    gen_best_genome = None
     for g in genomes:
         net = nn.create_feed_forward_phenotype(g)
         last_fitness = evaluate_network(net)
         g.fitness = last_fitness
-        max_fitness = max(last_fitness, max_fitness)
 
-        if last_fitness > gen_best_fitness:
-            gen_best_fitness = last_fitness
-            gen_best_genome = g
+        if last_fitness > max_fitness:
+            max_fitness = last_fitness
+            record.save_genome(g, last_fitness, generation)
         individual_number += 1
-
-    record.save_best_genome()
 
     generation += 1
 
