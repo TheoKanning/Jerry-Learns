@@ -92,19 +92,20 @@ else:
     RIGHT_ANKLE_STARTING_ANGLE = pi / 2
 
 # Collision Types #
-# todo make dictionary for these
-UPPER_COLLISION_TYPE = 1
-GROUND_COLLISION_TYPE = 2
-LOWER_COLLISION_TYPE = 3
-
 collision_types = {
-    "torso": UPPER_COLLISION_TYPE,
-    "head": UPPER_COLLISION_TYPE,
-    "upper_arm": UPPER_COLLISION_TYPE,
-    "forearm": UPPER_COLLISION_TYPE,
-    "thigh": UPPER_COLLISION_TYPE,
-    "calf": LOWER_COLLISION_TYPE,
-    "foot": LOWER_COLLISION_TYPE
+    "upper": 1,
+    "lower": 2,
+    "ground": 3
+}
+
+body_collision_types = {
+    "torso": collision_types["upper"],
+    "head": collision_types["upper"],
+    "upper_arm": collision_types["upper"],
+    "forearm": collision_types["upper"],
+    "thigh": collision_types["upper"],
+    "calf": collision_types["lower"],
+    "foot": collision_types["lower"]
 }
 
 # Images
@@ -134,4 +135,4 @@ class SegmentInfo:
 
 segments = {}
 for key in mass_fractions:
-    segments[key] = SegmentInfo(masses[key], lengths[key], images[key], collision_types[key])
+    segments[key] = SegmentInfo(masses[key], lengths[key], images[key], body_collision_types[key])
