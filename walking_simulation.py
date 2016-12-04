@@ -14,7 +14,7 @@ from neat import nn, population
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
 
-PROGRESS_TIMEOUT = 5000  # end ig no progress is made for five seconds
+PROGRESS_TIMEOUT = 2000  # end ig no progress is made for five seconds
 FALL_SIM_TIME = 500  # continue simulating for half second after a fall
 
 
@@ -110,7 +110,7 @@ class PopulationStats:
 
 
 class WalkingSimulation:
-    def __init__(self, num_generations=100, record_genomes=False):
+    def __init__(self, num_generations=100, record_genomes=False, record_frames=False):
         """
         :param num_generations: total number of evolutionary generations to do
         :param record_genomes: whether or not to store each pickled genome each time one beats the previous max
@@ -122,6 +122,8 @@ class WalkingSimulation:
 
         self.body_hit_ground = False
         self.population_stats = PopulationStats()
+        self.record_frames = record_frames
+        self.frame = 0
 
     def run(self):
         """ Starts the simulation """
@@ -237,6 +239,10 @@ class WalkingSimulation:
             self.draw_vertical_line(self.population_stats.max_fitness + STARTING_X_POSITION)
             self.draw_vertical_line(current_scaled_distance)
             body.draw(self.screen)
+
+            if self.record_frames:
+                pygame.image.save(self.screen, "records/{}.jpg".format(self.frame))
+                self.frame += 1
 
             space.step(1 / 50.0)
             pygame.display.flip()
