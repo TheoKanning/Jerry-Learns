@@ -107,6 +107,60 @@ class PopulationStats:
         return stats
 
 
+class RunStats:
+    """
+    Class that maintains the history of a single simulation. Returns fitness score when run is complete.
+    """
+
+    def __init__(self):
+        self.fall_time = None
+        self.max_distance = STARTING_X_POSITION
+        self.scaled_distance = STARTING_X_POSITION
+        self.last_progress_time = pygame.time.get_ticks()
+
+    def update(self, distance, multiplier):
+        """
+        Updates internal state with new distance and score multiplier
+        :param distance: absolute distance traveled
+        :param multiplier: score multiplier based on mody angle etc
+        """
+        if self.has_fallen():
+            # don't update score after falling
+            return
+
+        if distance > self.max_distance:
+            # multiply new distance by current score multiplier
+            self.scaled_distance += multiplier * (distance - self.max_distance)
+            self.max_distance = distance
+            self.last_progress_time = pygame.time.get_ticks()
+
+    def get_fitness(self):
+        return self.scaled_distance - STARTING_X_POSITION
+
+    def fall(self):
+        """
+        Called to signal that Jerry has fallen, only count first fall time.
+        """
+        if self.fall_time is None:
+            self.fall_time = pygame.time.get_ticks()
+
+    def has_fallen(self):
+        return self.fall_time is not None
+
+    def run_complete(self):
+        """
+        Returns true if the current run should be stopped
+        """
+        current_time = pygame.time.get_ticks()
+
+        if self.has_fallen() and current_time - self.fall_time > FALL_SIM_TIME:
+            return True
+        elif current_time - self.last_progress_time > PROGRESS_TIMEOUT:
+            return True
+        else:
+            return False
+
+
 class WalkingSimulation:
     def __init__(self, record_genomes=False, record_frames=False):
         """
@@ -116,13 +170,9 @@ class WalkingSimulation:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.record_genomes = record_genomes
 
-        self.body_hit_ground = False
         self.population_stats = PopulationStats()
         self.record_frames = record_frames
-        self.frame = 0
 
-    def create(self):
-        # todo give this a better name or move into init
         pygame.init()
         pygame.display.set_caption("Jerry's First Steps")
 
@@ -152,11 +202,11 @@ class WalkingSimulation:
 
     def evaluate_network(self, network):
         clock = pygame.time.Clock()
-        running = True
-        self.body_hit_ground = False
+
+        run_stats = RunStats()
 
         def fall_callback():
-            self.body_hit_ground = True
+            run_stats.fall()
 
         space = create_space(fall_callback)
 
@@ -164,41 +214,21 @@ class WalkingSimulation:
         body.add_to_space(space)
 
         current_scaled_distance = STARTING_X_POSITION
-        max_distance = STARTING_X_POSITION
 
-        last_progress_time = pygame.time.get_ticks()
-        fall_time = None
+        frame = 0
 
-        initial_outputs = None
-
-        while running:
+        while not run_stats.run_complete():
             self.screen.fill(THECOLORS["white"])
-            current_time = pygame.time.get_ticks()
 
             for event in pygame.event.get():
                 if event.type == QUIT:
                     sys.exit()
 
-            if self.body_hit_ground:
-                if fall_time is None:
-                    fall_time = current_time
-                elif current_time - fall_time > FALL_SIM_TIME:
-                    running = False
-            elif body.get_distance() > max_distance:
-                # take distance improvement and reward staying vertical
-                # only count distance before fall
-                current_scaled_distance += body.get_score_multiplier() * (body.get_distance() - max_distance)
-                max_distance = body.get_distance()
-                last_progress_time = current_time
-            elif current_time - last_progress_time > PROGRESS_TIMEOUT:
-                running = False  # end if no progress in last three seconds
+            run_stats.update(body.get_distance(), body.get_score_multiplier())
 
             inputs = body.get_state()
             outputs = scale_outputs(network.serial_activate(inputs))
             body.set_rates(outputs)
-
-            if initial_outputs is None:
-                initial_outputs = outputs
 
             self.draw_stats()
             self.draw_vertical_line(self.population_stats.max_fitness + STARTING_X_POSITION)
@@ -206,20 +236,11 @@ class WalkingSimulation:
             body.draw(self.screen)
 
             if self.record_frames:
-                pygame.image.save(self.screen, "records/{}.jpg".format(self.frame))
-                self.frame += 1
+                pygame.image.save(self.screen, "records/{}.jpg".format(frame))
+                frame += 1
 
             space.step(1 / 50.0)
             pygame.display.flip()
             clock.tick(50)
 
-        # uncomment to see how much network outputs are changing
-        changes = [abs(a - b) for a, b in zip(outputs, initial_outputs)]
-        print sum(changes) / len(changes)
-        count = 0
-        for x in outputs:
-            if x > 2.99 or x < -2.99:
-                count += 1
-        print count
-
-        return current_scaled_distance - STARTING_X_POSITION
+        return run_stats.get_fitness()

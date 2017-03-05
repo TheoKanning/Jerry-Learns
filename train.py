@@ -35,8 +35,6 @@ def main():
     if record_genomes:
         record.create_folder()
 
-    sim.create()
-
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'neat_config')
     pop = population.Population(config_path)
