@@ -1,15 +1,13 @@
 import pygame
 import pymunk
 import sys
-import os
-import record
 from human_body_constants import collision_types
 from human_body_constants import STARTING_X_POSITION
 from human_body import HumanBody
 from pygame.locals import *
 from pygame.color import *
 from pygame.font import Font
-from neat import nn, population
+from neat import population
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
@@ -110,14 +108,12 @@ class PopulationStats:
 
 
 class WalkingSimulation:
-    def __init__(self, num_generations=100, record_genomes=False, record_frames=False):
+    def __init__(self, record_genomes=False, record_frames=False):
         """
-        :param num_generations: total number of evolutionary generations to do
         :param record_genomes: whether or not to store each pickled genome each time one beats the previous max
         """
 
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.num_generations = num_generations
         self.record_genomes = record_genomes
 
         self.body_hit_ground = False
@@ -125,19 +121,10 @@ class WalkingSimulation:
         self.record_frames = record_frames
         self.frame = 0
 
-    def run(self):
-        """ Starts the simulation """
+    def create(self):
+        # todo give this a better name or move into init
         pygame.init()
         pygame.display.set_caption("Jerry's First Steps")
-
-        if self.record_genomes:
-            record.create_folder()
-
-        local_dir = os.path.dirname(__file__)
-        config_path = os.path.join(local_dir, 'neat_config')
-        pop = population.Population(config_path)
-        pop.add_reporter(self.population_stats.reporter)
-        pop.run(self.population_fitness, self.num_generations)
 
     def draw_stats(self):
         """
@@ -162,28 +149,6 @@ class WalkingSimulation:
         :param x_pos: the x coordinate of this line
         """
         pygame.draw.line(self.screen, (0, 0, 0), (x_pos, 0), (x_pos, SCREEN_HEIGHT))
-
-    def population_fitness(self, genomes):
-        """
-        Calculates the fitness score of each genome in a population
-        :param genomes: list of genomes
-        """
-
-        self.population_stats.individual_number = 1
-        for g in genomes:
-            net = nn.create_feed_forward_phenotype(g)
-            last_fitness = self.evaluate_network(net)
-            self.population_stats.last_fitness = last_fitness
-            g.fitness = last_fitness
-
-            #  move this logic into population stats
-            if last_fitness > self.population_stats.max_fitness:
-                self.population_stats.max_fitness = last_fitness
-                if self.record_genomes:
-                    record.save_genome(g, last_fitness, self.population_stats.generation)
-            self.population_stats.individual_number += 1
-
-        self.population_stats.generation += 1
 
     def evaluate_network(self, network):
         clock = pygame.time.Clock()
@@ -212,7 +177,7 @@ class WalkingSimulation:
 
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    running = False
+                    sys.exit()
 
             if self.body_hit_ground:
                 if fall_time is None:
@@ -258,12 +223,3 @@ class WalkingSimulation:
         print count
 
         return current_scaled_distance - STARTING_X_POSITION
-
-
-def main():
-    sim = WalkingSimulation()
-    sim.run()
-
-
-if __name__ == '__main__':
-    sys.exit(main())
