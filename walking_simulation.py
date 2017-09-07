@@ -1,13 +1,11 @@
 import pygame
 import pymunk
 import sys
+from pygame.event import EventType
 from human_body_constants import collision_types
 from human_body_constants import STARTING_X_POSITION
 from human_body import HumanBody
-from pygame.locals import *
-from pygame.color import *
-from pygame.font import Font
-from neat import population
+from neat import statistics
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
@@ -80,7 +78,7 @@ class PopulationStats:
         self.individual_number = 1
         self.max_fitness = 0
         self.last_fitness = 0
-        self.reporter = population.StatisticsReporter()
+        self.reporter = statistics.StatisticsReporter()
 
     def stats_list(self):
         """
@@ -95,7 +93,7 @@ class PopulationStats:
         """
         :return: A list of strings displaying statistics about the last 5 generations
         """
-        fitness_history = self.reporter.get_average_fitness()
+        fitness_history = self.reporter.get_fitness_mean()
         start_generation = max(0, len(fitness_history) - 5)
         start_generation += 1  # plus one so this is no longer zero-indexed
         stats = []
@@ -180,7 +178,7 @@ class WalkingSimulation:
         """
         Draws all stats on the screen
         """
-        font = Font(None, 36)
+        font = pygame.font.Font(None, 36)
         offset = 8
         for text in self.population_stats.stats_list():
             surface = font.render(text, 1, (0, 0, 0))
@@ -218,10 +216,10 @@ class WalkingSimulation:
         frame = 0
 
         while not run_stats.run_complete():
-            self.screen.fill(THECOLORS["white"])
+            self.screen.fill(pygame.Color("white"))
 
             for event in pygame.event.get():
-                if event.type == QUIT:
+                if event.type == EventType.name.QUIT:
                     sys.exit()
 
             run_stats.update(body.get_distance(), body.get_score_multiplier())
