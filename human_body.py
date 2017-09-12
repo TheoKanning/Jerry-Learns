@@ -158,7 +158,7 @@ class HumanBody:
         """
 
         if len(rates) is not 8:
-            print "Rate array is not length 8"
+            print("Rate array is not length 8")
             return
 
         self.left_shoulder.set_rate(rates[0])

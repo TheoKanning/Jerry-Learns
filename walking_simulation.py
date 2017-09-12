@@ -1,7 +1,6 @@
 import pygame
 import pymunk
 import sys
-from pygame.event import EventType
 from human_body_constants import collision_types
 from human_body_constants import STARTING_X_POSITION
 from human_body import HumanBody
@@ -219,13 +218,13 @@ class WalkingSimulation:
             self.screen.fill(pygame.Color("white"))
 
             for event in pygame.event.get():
-                if event.type == EventType.name.QUIT:
+                if event.type == pygame.QUIT:
                     sys.exit()
 
             run_stats.update(body.get_distance(), body.get_score_multiplier())
 
             inputs = body.get_state()
-            outputs = scale_outputs(network.serial_activate(inputs))
+            outputs = scale_outputs(network.activate(inputs))
             body.set_rates(outputs)
 
             self.draw_stats()
