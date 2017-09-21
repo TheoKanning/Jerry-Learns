@@ -1,5 +1,6 @@
 import pygame
 import pymunk
+import fitness
 import sys
 import stats
 from human_body_constants import collision_types
@@ -109,6 +110,8 @@ class WalkingSimulation:
         clock = pygame.time.Clock()
 
         run_stats = stats.RunStats()
+        # todo pass in the class and instantiate here
+        fitness_calculator = fitness.WalkingFitnessCalculator()
 
         def fall_callback():
             run_stats.fall()
@@ -127,15 +130,16 @@ class WalkingSimulation:
                 if event.type == pygame.QUIT:
                     sys.exit()
 
-            run_stats.update(body.get_distance(), body.get_score_multiplier())
+            run_stats.update(body)
+            fitness_calculator.update(body)
 
             inputs = body.get_state()
             outputs = scale_outputs(network.activate(inputs))
             body.set_rates(outputs)
 
             self.draw_stats()
-            self.draw_vertical_line(self.population_stats.max_fitness + STARTING_X_POSITION)
-            self.draw_vertical_line(run_stats.scaled_distance)
+            self.draw_vertical_line(self.population_stats.max_fitness)
+            self.draw_vertical_line(fitness_calculator.get_fitness())
             body.draw(self.screen)
 
             if self.record_frames:
@@ -146,4 +150,4 @@ class WalkingSimulation:
             pygame.display.flip()
             clock.tick(50)
 
-        return run_stats.get_fitness()
+        return fitness_calculator.get_fitness()

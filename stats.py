@@ -52,27 +52,21 @@ class RunStats:
     def __init__(self):
         self.fall_time = None
         self.max_distance = STARTING_X_POSITION
-        self.scaled_distance = STARTING_X_POSITION
         self.last_progress_time = pygame.time.get_ticks()
 
-    def update(self, distance, multiplier):
+    def update(self, body):
         """
-        Updates internal state with new distance and score multiplier
-        :param distance: absolute distance traveled
-        :param multiplier: score multiplier based on mody angle etc
+        Updates internal state with last progress time
+        :param body: simulated body object
         """
         if self.has_fallen():
             # don't update score after falling
             return
 
+        distance = body.get_distance()
         if distance > self.max_distance:
-            # multiply new distance by current score multiplier
-            self.scaled_distance += multiplier * (distance - self.max_distance)
-            self.max_distance = distance
             self.last_progress_time = pygame.time.get_ticks()
-
-    def get_fitness(self):
-        return self.scaled_distance - STARTING_X_POSITION
+            self.max_distance = distance
 
     def fall(self):
         """
