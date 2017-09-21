@@ -4,8 +4,9 @@ from neat import nn, population
 import os
 import record
 import neat
+import stats
 
-stats = walk.PopulationStats()
+pop_stats = stats.PopulationStats()
 sim = walk.WalkingSimulation()
 record_genomes = False
 
@@ -16,21 +17,21 @@ def population_fitness(genomes, config):
     :param genomes: list of genomes
     :param config: NEAT config
     """
-    stats.individual_number = 1
+    pop_stats.individual_number = 1
     for genome_id, genome in genomes:
         net = nn.FeedForwardNetwork.create(genome, config)
-        last_fitness = sim.evaluate_network(net, stats)
-        stats.last_fitness = last_fitness
+        last_fitness = sim.evaluate_network(net, pop_stats)
+        pop_stats.last_fitness = last_fitness
         genome.fitness = last_fitness
 
         #  move this logic into population stats
-        if last_fitness > stats.max_fitness:
-            stats.max_fitness = last_fitness
+        if last_fitness > pop_stats.max_fitness:
+            pop_stats.max_fitness = last_fitness
             if record_genomes:
-                record.save_genome(genome, last_fitness, stats.generation)
-        stats.individual_number += 1
+                record.save_genome(genome, last_fitness, pop_stats.generation)
+        pop_stats.individual_number += 1
 
-    stats.generation += 1
+    pop_stats.generation += 1
 
 
 def main():
@@ -43,7 +44,7 @@ def main():
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_path)
     pop = population.Population(config)
-    pop.add_reporter(stats.reporter)
+    pop.add_reporter(pop_stats.reporter)
     pop.run(population_fitness, n=10)
 
 
