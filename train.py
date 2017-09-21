@@ -19,7 +19,7 @@ def population_fitness(genomes, config):
     stats.individual_number = 1
     for genome_id, genome in genomes:
         net = nn.FeedForwardNetwork.create(genome, config)
-        last_fitness = sim.evaluate_network(net)
+        last_fitness = sim.evaluate_network(net, stats)
         stats.last_fitness = last_fitness
         genome.fitness = last_fitness
 

@@ -197,7 +197,9 @@ class WalkingSimulation:
         """
         pygame.draw.line(self.screen, (0, 0, 0), (x_pos, 0), (x_pos, SCREEN_HEIGHT))
 
-    def evaluate_network(self, network):
+    def evaluate_network(self, network, population_stats):
+        # todo determine where these stats should be stored and how to update them
+        self.population_stats = population_stats
         clock = pygame.time.Clock()
 
         run_stats = RunStats()
@@ -209,8 +211,6 @@ class WalkingSimulation:
 
         body = HumanBody()
         body.add_to_space(space)
-
-        current_scaled_distance = STARTING_X_POSITION
 
         frame = 0
 
@@ -229,7 +229,7 @@ class WalkingSimulation:
 
             self.draw_stats()
             self.draw_vertical_line(self.population_stats.max_fitness + STARTING_X_POSITION)
-            self.draw_vertical_line(current_scaled_distance)
+            self.draw_vertical_line(run_stats.scaled_distance)
             body.draw(self.screen)
 
             if self.record_frames:
