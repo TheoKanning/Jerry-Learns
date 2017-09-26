@@ -2,7 +2,8 @@ import os
 import sys
 
 import neat
-import walking_simulation as walk
+from jerry import walking_simulation as walk
+from jerry import calculator as calc
 from neat import nn, population
 
 from jerry import record, stats
@@ -21,7 +22,8 @@ def population_fitness(genomes, config):
     pop_stats.individual_number = 1
     for genome_id, genome in genomes:
         net = nn.FeedForwardNetwork.create(genome, config)
-        last_fitness = sim.evaluate_network(net)
+        calculator = calc.NeatWalkingCalculator(net)
+        last_fitness = sim.evaluate_network(calculator)
         pop_stats.last_fitness = last_fitness
         genome.fitness = last_fitness
 

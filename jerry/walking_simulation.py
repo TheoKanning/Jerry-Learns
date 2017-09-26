@@ -1,24 +1,15 @@
 import sys
 
-import fitness
 import pygame
 import pymunk
-from human_body import HumanBody
 
 from jerry import termination
+from jerry import fitness
+from jerry.human_body import HumanBody
 from jerry.human_body_constants import collision_types
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
-
-
-def scale_outputs(outputs):
-    """
-    Scale neural network outputs between -3 and 3
-    :param outputs: outputs of neural network, scaled from -1 to 1 from tanh activation
-    :return: scaled outputs that can be used to set body rate
-    """
-    return [3 * x for x in outputs]
 
 
 def add_ground(space):
@@ -105,7 +96,7 @@ class WalkingSimulation:
         """
         pygame.draw.line(self.screen, (0, 0, 0), (x_pos, 0), (x_pos, SCREEN_HEIGHT))
 
-    def evaluate_network(self, network):
+    def evaluate_network(self, calculator):
         clock = pygame.time.Clock()
 
         run_terminator = termination.RunTerminator()
@@ -134,7 +125,7 @@ class WalkingSimulation:
             run_terminator.update(body)
 
             inputs = body.get_state()
-            outputs = scale_outputs(network.activate(inputs))
+            outputs = calculator.calculate(inputs)
             body.set_rates(outputs)
 
             self.draw_stats()

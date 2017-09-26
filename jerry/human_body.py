@@ -1,11 +1,35 @@
 import math
 
-from joint import Joint
+from jerry.joint import Joint
 
 from jerry import human_body_constants as body
 from jerry.human_body_constants import ranges
 from jerry.human_body_constants import segments
 from jerry.segment import Segment
+
+from collections import namedtuple
+
+# tuple to store current body angle to report to rest of simulation
+BodyState = namedtuple('BodyState', 'torso_angle \
+                                    torso_rate \
+                                    left_shoulder_angle \
+                                    right_shoulder_angle \
+                                    left_hip_angle \
+                                    left_knee_angle \
+                                    left_ankle_angle \
+                                    right_hip_angle \
+                                    right_knee_angle \
+                                    right_ankle_angle')
+
+# tuple to send a set of joint commands
+BodyCommand = namedtuple('BodyCommand', 'left_shoulder_rate \
+                                        right_shoulder_rate \
+                                        left_hip_rate \
+                                        left_knee_rate \
+                                        left_ankle_rate \
+                                        right_hip_rate \
+                                        right_knee_rate \
+                                        right_ankle_rate')
 
 
 class HumanBody:
