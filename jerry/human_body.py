@@ -32,6 +32,8 @@ BodyCommand = namedtuple('BodyCommand', 'left_shoulder_rate \
                                         right_ankle_rate')
 
 
+# todo figure out more extensible way to set rates
+# todo fix this gigantic initialization mess
 class HumanBody:
     def __init__(self):
         # Torso
@@ -159,41 +161,35 @@ class HumanBody:
 
     def get_state(self):
         """
-        Returns an array of all body states
-        :return:
+        Returns a BodyState containing all relevant state info
+        :return: BodyState object
         """
-        state = [self.torso.get_angle(),
-                 self.torso.get_rate(),
-                 self.left_shoulder.get_angle(),
-                 self.right_shoulder.get_angle(),
-                 self.left_hip.get_angle(),
-                 self.left_knee.get_angle(),
-                 self.left_ankle.get_angle(),
-                 self.right_hip.get_angle(),
-                 self.right_knee.get_angle(),
-                 self.right_ankle.get_angle()
-                 ]
+        state = BodyState(self.torso.get_angle(),
+                          self.torso.get_rate(),
+                          self.left_shoulder.get_angle(),
+                          self.right_shoulder.get_angle(),
+                          self.left_hip.get_angle(),
+                          self.left_knee.get_angle(),
+                          self.left_ankle.get_angle(),
+                          self.right_hip.get_angle(),
+                          self.right_knee.get_angle(),
+                          self.right_ankle.get_angle())
 
         return state
 
-    def set_rates(self, rates):
+    def set_rates(self, command):
         """
-        Takes an array of length 8 and sets the joint rates
-        :param rates: array of length 8 containing rates from -3 to 3
+        Takes a BodyCommand object and sets the corresponding rates
         """
 
-        if len(rates) is not 8:
-            print("Rate array is not length 8")
-            return
-
-        self.left_shoulder.set_rate(rates[0])
-        self.right_shoulder.set_rate(rates[1])
-        self.left_hip.set_rate(rates[2])
-        self.left_knee.set_rate(rates[3])
-        self.left_ankle.set_rate(rates[4])
-        self.right_hip.set_rate(rates[5])
-        self.right_knee.set_rate(rates[6])
-        self.right_ankle.set_rate(rates[7])
+        self.left_shoulder.set_rate(command.left_shoulder_rate)
+        self.right_shoulder.set_rate(command.right_shoulder_rate)
+        self.left_hip.set_rate(command.left_hip_rate)
+        self.left_knee.set_rate(command.left_knee_rate)
+        self.left_ankle.set_rate(command.left_ankle_rate)
+        self.right_hip.set_rate(command.right_hip_rate)
+        self.right_knee.set_rate(command.right_knee_rate)
+        self.right_ankle.set_rate(command.right_ankle_rate)
 
     def get_distance(self):
         """
