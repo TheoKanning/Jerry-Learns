@@ -1,11 +1,13 @@
+import sys
+
 import pygame
 import pymunk
+
 import fitness
-import sys
 import stats
-from human_body_constants import collision_types
-from human_body_constants import STARTING_X_POSITION
+import termination
 from human_body import HumanBody
+from human_body_constants import collision_types
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
@@ -109,12 +111,12 @@ class WalkingSimulation:
         self.population_stats = population_stats
         clock = pygame.time.Clock()
 
-        run_stats = stats.RunStats()
+        run_terminator = termination.RunTerminator()
         # todo pass in the class and instantiate here
         fitness_calculator = fitness.WalkingFitnessCalculator()
 
         def fall_callback():
-            run_stats.fall()
+            run_terminator.fall()
 
         space = create_space(fall_callback)
 
@@ -122,16 +124,20 @@ class WalkingSimulation:
         body.add_to_space(space)
 
         frame = 0
+        last_fitness = 0
 
-        while not run_stats.run_complete():
+        while not run_terminator.run_complete():
             self.screen.fill(pygame.Color("white"))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
 
-            run_stats.update(body)
             fitness_calculator.update(body)
+
+            if fitness_calculator.get_fitness() > last_fitness:
+                last_fitness = fitness_calculator.get_fitness()
+                run_terminator.update()
 
             inputs = body.get_state()
             outputs = scale_outputs(network.activate(inputs))
