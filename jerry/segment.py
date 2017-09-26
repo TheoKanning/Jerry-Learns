@@ -89,7 +89,9 @@ class Segment:
         :return: nothing
         """
         if self.image is None:
-            pymunk.pygame_util.draw(screen, self.shape)
+            # todo get this working again after pymunk update
+            # pymunk.pygame_util.DrawOptions(screen, self.shape)
+            pass
         else:
             p = self.body.position
             p = Vec2d(to_pygame(p))

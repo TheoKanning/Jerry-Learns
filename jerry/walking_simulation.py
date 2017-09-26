@@ -10,6 +10,8 @@ from jerry.human_body_constants import collision_types
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
+FRAME_RATE = 50
+PERIOD = 1.0 / FRAME_RATE
 
 
 def add_ground(space):
@@ -137,8 +139,8 @@ class WalkingSimulation:
                 pygame.image.save(self.screen, "records/{}.jpg".format(frame))
                 frame += 1
 
-            space.step(1 / 50.0)
+            space.step(PERIOD)
             pygame.display.flip()
-            clock.tick(50)
+            clock.tick(FRAME_RATE)
 
         return fitness_calculator.get_fitness()
