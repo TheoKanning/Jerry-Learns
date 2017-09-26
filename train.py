@@ -7,7 +7,7 @@ import neat
 import stats
 
 pop_stats = stats.PopulationStats()
-sim = walk.WalkingSimulation()
+sim = walk.WalkingSimulation(pop_stats)
 record_genomes = False
 
 
@@ -20,7 +20,7 @@ def population_fitness(genomes, config):
     pop_stats.individual_number = 1
     for genome_id, genome in genomes:
         net = nn.FeedForwardNetwork.create(genome, config)
-        last_fitness = sim.evaluate_network(net, pop_stats)
+        last_fitness = sim.evaluate_network(net)
         pop_stats.last_fitness = last_fitness
         genome.fitness = last_fitness
 

@@ -4,7 +4,6 @@ import pygame
 import pymunk
 
 import fitness
-import stats
 import termination
 from human_body import HumanBody
 from human_body_constants import collision_types
@@ -68,7 +67,7 @@ def create_space(fall_callback):
 
 
 class WalkingSimulation:
-    def __init__(self, record_genomes=False, record_frames=False):
+    def __init__(self, population_stats, record_genomes=False, record_frames=False):
         """
         :param record_genomes: whether or not to store each pickled genome each time one beats the previous max
         """
@@ -76,7 +75,7 @@ class WalkingSimulation:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.record_genomes = record_genomes
 
-        self.population_stats = stats.PopulationStats()
+        self.population_stats = population_stats
         self.record_frames = record_frames
 
         pygame.init()
@@ -106,9 +105,7 @@ class WalkingSimulation:
         """
         pygame.draw.line(self.screen, (0, 0, 0), (x_pos, 0), (x_pos, SCREEN_HEIGHT))
 
-    def evaluate_network(self, network, population_stats):
-        # todo determine where these stats should be stored and how to update them
-        self.population_stats = population_stats
+    def evaluate_network(self, network):
         clock = pygame.time.Clock()
 
         run_terminator = termination.RunTerminator()
@@ -124,7 +121,6 @@ class WalkingSimulation:
         body.add_to_space(space)
 
         frame = 0
-        last_fitness = 0
 
         while not run_terminator.run_complete():
             self.screen.fill(pygame.Color("white"))
@@ -135,9 +131,7 @@ class WalkingSimulation:
 
             fitness_calculator.update(body)
 
-            if fitness_calculator.get_fitness() > last_fitness:
-                last_fitness = fitness_calculator.get_fitness()
-                run_terminator.update()
+            run_terminator.update(body)
 
             inputs = body.get_state()
             outputs = scale_outputs(network.activate(inputs))

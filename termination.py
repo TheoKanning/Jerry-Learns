@@ -12,13 +12,16 @@ class RunTerminator:
     def __init__(self):
         self.fall_time = None
         self.last_progress_time = pygame.time.get_ticks()
+        self.last_distance = 0
 
-    def update(self):
+    def update(self, body):
         """
-        Call this method when simulation makes progress, run will terminate if this is not called for duration of
+        Checks if body is still moving forward, run will terminate if no progress is made for duration of
         PROGRESS_TIMEOUT
         """
-        self.last_progress_time = pygame.time.get_ticks()
+        if body.get_distance() > self.last_distance:
+            self.last_distance = body.get_distance()
+            self.last_progress_time = pygame.time.get_ticks()
 
     def fall(self):
         """
