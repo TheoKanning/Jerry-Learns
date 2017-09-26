@@ -1,10 +1,11 @@
 import math
 
-import human_body_constants as body
-from human_body_constants import ranges
-from human_body_constants import segments
 from joint import Joint
-from segment import Segment
+
+from jerry import human_body_constants as body
+from jerry.human_body_constants import ranges
+from jerry.human_body_constants import segments
+from jerry.segment import Segment
 
 
 class HumanBody:

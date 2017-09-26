@@ -6,7 +6,7 @@ FALL_SIM_TIME = 500  # continue simulating for half second after a fall
 
 class RunTerminator:
     """
-    Class that maintains the active state fo the current run. Determines when simulation should be stopped
+    Class that maintains the active state of the current run. Determines when simulation should be stopped
     """
 
     def __init__(self):

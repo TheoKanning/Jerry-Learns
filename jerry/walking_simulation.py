@@ -1,12 +1,12 @@
 import sys
 
+import fitness
 import pygame
 import pymunk
-
-import fitness
-import termination
 from human_body import HumanBody
-from human_body_constants import collision_types
+
+from jerry import termination
+from jerry.human_body_constants import collision_types
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600

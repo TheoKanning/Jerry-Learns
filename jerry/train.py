@@ -1,10 +1,11 @@
+import os
 import sys
+
+import neat
 import walking_simulation as walk
 from neat import nn, population
-import os
-import record
-import neat
-import stats
+
+from jerry import record, stats
 
 pop_stats = stats.PopulationStats()
 sim = walk.WalkingSimulation(pop_stats)

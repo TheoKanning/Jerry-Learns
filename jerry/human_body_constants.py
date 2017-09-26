@@ -110,13 +110,13 @@ body_collision_types = {
 
 # Images
 images = {
-    "torso": pygame.image.load("jerry/torso.bmp"),
-    "head": pygame.image.load("jerry/head.bmp"),
-    "upper_arm": pygame.image.load("jerry/upper_arm.bmp"),
-    "forearm": pygame.image.load("jerry/forearm.bmp"),
-    "thigh": pygame.image.load("jerry/thigh.bmp"),
-    "calf": pygame.image.load("jerry/leg.bmp"),
-    "foot": pygame.image.load("jerry/foot.bmp")
+    "torso": pygame.image.load("images/torso.bmp"),
+    "head": pygame.image.load("images/head.bmp"),
+    "upper_arm": pygame.image.load("images/upper_arm.bmp"),
+    "forearm": pygame.image.load("images/forearm.bmp"),
+    "thigh": pygame.image.load("images/thigh.bmp"),
+    "calf": pygame.image.load("images/leg.bmp"),
+    "foot": pygame.image.load("images/foot.bmp")
 }
 
 

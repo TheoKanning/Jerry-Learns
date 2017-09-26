@@ -1,9 +1,11 @@
+import math
+
+import pygame.transform
 import pymunk
 import pymunk.pygame_util
 from pymunk import Vec2d
-from conversion import to_pygame
-import math
-import pygame.transform
+
+from jerry.conversion import to_pygame
 
 SEGMENT_WIDTH = 5
 FRICTION = .9
