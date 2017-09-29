@@ -4,7 +4,6 @@ import pygame
 import pymunk
 
 from jerry import termination
-from jerry import fitness
 from jerry.human_body import HumanBody
 from jerry.human_body_constants import collision_types
 
@@ -59,7 +58,7 @@ def create_space(fall_callback):
     return space
 
 
-class WalkingSimulation:
+class Simulator:
     def __init__(self, population_stats, record_genomes=False, record_frames=False):
         """
         :param record_genomes: whether or not to store each pickled genome each time one beats the previous max
@@ -98,12 +97,15 @@ class WalkingSimulation:
         """
         pygame.draw.line(self.screen, (0, 0, 0), (x_pos, 0), (x_pos, SCREEN_HEIGHT))
 
-    def evaluate_network(self, calculator):
+    def evaluate(self, calculator, fitness_calculator):
+        """
+        Runs a full simulation using the given Calculator to control Jerry
+        :param calculator:
+        :return:
+        """
         clock = pygame.time.Clock()
 
         run_terminator = termination.RunTerminator()
-        # todo pass in the class and instantiate here
-        fitness_calculator = fitness.WalkingFitnessCalculator()
 
         def fall_callback():
             run_terminator.fall()

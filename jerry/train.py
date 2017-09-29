@@ -2,15 +2,20 @@ import os
 import sys
 
 import neat
-from jerry import walking_simulation as walk
-from jerry import calculator as calc
 from neat import nn, population
 
+from jerry import calculator as calc
+from jerry import fitness
 from jerry import record, stats
+from jerry import simulator
 
 pop_stats = stats.PopulationStats()
-sim = walk.WalkingSimulation(pop_stats)
+sim = simulator.Simulator(pop_stats)
 record_genomes = False
+
+
+def get_fitness_calculator():
+    return fitness.WalkingFitnessCalculator()
 
 
 def population_fitness(genomes, config):
@@ -23,18 +28,18 @@ def population_fitness(genomes, config):
     for genome_id, genome in genomes:
         net = nn.FeedForwardNetwork.create(genome, config)
         calculator = calc.NeatWalkingMotionCalculator(net)
-        last_fitness = sim.evaluate_network(calculator)
+        last_fitness = sim.evaluate(calculator, get_fitness_calculator())
         pop_stats.last_fitness = last_fitness
         genome.fitness = last_fitness
 
-        #  move this logic into population stats
+        # todo move this logic into population stats
         if last_fitness > pop_stats.max_fitness:
             pop_stats.max_fitness = last_fitness
             if record_genomes:
                 record.save_genome(genome, last_fitness, pop_stats.generation)
-        pop_stats.individual_number += 1
+        pop_stats.next_individual()
 
-    pop_stats.generation += 1
+    pop_stats.next_generation()
 
 
 def main():

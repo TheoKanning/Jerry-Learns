@@ -37,4 +37,11 @@ class PopulationStats:
 
         return stats
 
+    def next_individual(self):
+        self.individual_number += 1
+
+    def next_generation(self):
+        self.generation += 1
+        self.individual_number = 1
+
 
