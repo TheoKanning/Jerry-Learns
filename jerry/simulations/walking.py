@@ -1,6 +1,10 @@
+import os
+
+import neat
+
+from ..calculator import MotionCalculator
 from ..config import Config
 from ..fitness import FitnessCalculator
-from ..calculator import MotionCalculator
 from ..human_body import BodyCommand
 
 
@@ -24,6 +28,7 @@ class NeatWalkingMotionCalculator(MotionCalculator):
         return command
 
     def scale_outputs(self, outputs):
+        # todo output scaling is still bad, Jerry hardly reacts to anything
         """
         Scale neural network outputs between -3 and 3
         :param outputs: array of outputs of neural network, scaled from -1 to 1 from tanh activation
@@ -58,4 +63,9 @@ class WalkingConfig(Config):
         return WalkingFitnessCalculator()
 
     def get_neat_config(self):
-        return
+        local_dir = os.path.dirname(__file__)
+        config_path = os.path.join(local_dir, 'walking_neat_config')
+        config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                             neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                             config_path)
+        return config
