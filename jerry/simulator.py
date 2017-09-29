@@ -97,11 +97,12 @@ class Simulator:
         """
         pygame.draw.line(self.screen, (0, 0, 0), (x_pos, 0), (x_pos, SCREEN_HEIGHT))
 
-    def evaluate(self, calculator, fitness_calculator):
+    def evaluate(self, motion_calculator, fitness_calculator):
         """
         Runs a full simulation using the given Calculator to control Jerry
-        :param calculator:
-        :return:
+        :param motion_calculator: MotionCalculator that determines Jerry's motion
+        :param fitness_calculator: Determines Jerry's fitness score
+        :return: fitness score
         """
         clock = pygame.time.Clock()
 
@@ -129,7 +130,7 @@ class Simulator:
             run_terminator.update(body)
 
             inputs = body.get_state()
-            outputs = calculator.calculate(inputs)
+            outputs = motion_calculator.calculate(inputs)
             body.set_rates(outputs)
 
             self.draw_stats()
