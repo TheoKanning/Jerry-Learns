@@ -1,6 +1,6 @@
 import pygame
 
-PROGRESS_TIMEOUT = 2000  # end if no progress is made for this many
+PROGRESS_TIMEOUT = 5000  # end if no progress is made for this many
 FALL_SIM_TIME = 500  # continue simulating for half second after a fall
 
 

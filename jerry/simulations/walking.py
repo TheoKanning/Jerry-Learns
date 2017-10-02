@@ -28,7 +28,6 @@ class NeatWalkingMotionCalculator(MotionCalculator):
         return command
 
     def scale_outputs(self, outputs):
-        # todo output scaling is still bad, Jerry hardly reacts to anything
         """
         Scale neural network outputs between -3 and 3
         :param outputs: array of outputs of neural network, scaled from -1 to 1 from tanh activation

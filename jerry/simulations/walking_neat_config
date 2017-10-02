@@ -1,5 +1,5 @@
 [NEAT]
-pop_size                = 100
+pop_size                = 30
 fitness_threshold       = 1200
 fitness_criterion       = max
 reset_on_extinction     = False
@@ -7,7 +7,7 @@ reset_on_extinction     = False
 [DefaultGenome]
 # network parameters
 num_inputs              = 10
-num_hidden              = 8
+num_hidden              = 0
 num_outputs             = 8
 
 # node activation options
@@ -35,19 +35,19 @@ node_delete_prob        = 0.0352
 
 # connection weight options
 weight_init_mean        = 0.0
-weight_init_stdev       = 0.25
-weight_max_value        = 2
-weight_min_value        = -2
+weight_init_stdev       = 0.1
+weight_max_value        = 0.5
+weight_min_value        = -0.5
 weight_mutate_power     = 1
 weight_mutate_rate      = 0.46
 weight_replace_rate     = 0.1
 
 # node bias options
 bias_init_mean          = 0
-bias_init_stdev         = 1.0
-bias_max_value          = 2
-bias_min_value          = -2
-bias_mutate_power       = 2
+bias_init_stdev         = 0.1
+bias_max_value          = 0.5
+bias_min_value          = -0.5
+bias_mutate_power       = 0.1
 bias_mutate_rate        = 0.5
 bias_replace_rate       = 0.05
 
