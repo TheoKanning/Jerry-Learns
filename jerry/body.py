@@ -33,7 +33,7 @@ BodyCommand = namedtuple('BodyCommand', 'left_shoulder_rate \
 
 
 # todo figure out more extensible way to set rates
-class HumanBody:
+class Body:
     def __init__(self, joint_angles):
         # Torso
         self.torso = Segment(segments["torso"], body.TORSO_POSITION)

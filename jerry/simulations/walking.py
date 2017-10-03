@@ -7,6 +7,7 @@ from ..config import Config
 from ..fitness import FitnessCalculator
 from ..body import BodyCommand
 from math import pi
+import jerry.body as body
 
 # starting joint angles
 joints_angles = {
@@ -91,5 +92,5 @@ class WalkingConfig(Config):
                              config_path)
         return config
 
-    def get_joint_angles(self):
-        return joints_angles
+    def get_body(self):
+        return body.Body(joints_angles)
