@@ -1,8 +1,6 @@
 from math import pi
 import pygame
 
-WALKING_START = True
-
 # Size and Weight Constants
 TOTAL_MASS = 80  # Made up units
 TOTAL_HEIGHT = 350  # Pygame pixels
@@ -50,12 +48,12 @@ HIP_STARTING_HEIGHT_FRACTION = height_fractions["calf"] + height_fractions["thig
 
 # Starting Positions
 HEAD_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * SHOULDER_STARTING_HEIGHT_FRACTION + lengths[
-    "head"] + STARTING_Y_POSITION  # subtract to prevent weird head bounce at start
+    "head"] + STARTING_Y_POSITION
 TORSO_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTION + lengths[
     "torso"] + STARTING_Y_POSITION
 
 # Joint Constraints #
-ranges = {
+joint_ranges = {
     "neck": (0, 0),
     "elbow": (0, 3 * pi / 4),
     "shoulder": (-pi / 2, pi),
@@ -64,31 +62,19 @@ ranges = {
     "ankle": (0, 2 * pi / 3)
 }
 
-# Joint Starting Angles #
-if WALKING_START:
-    NECK_STARTING_ANGLE = 0
-    LEFT_SHOULDER_STARTING_ANGLE = - pi / 4
-    LEFT_ELBOW_STARTING_ANGLE = pi / 4
-    RIGHT_SHOULDER_STARTING_ANGLE = pi / 4
-    RIGHT_ELBOW_STARTING_ANGLE = pi / 4
-    LEFT_HIP_STARTING_ANGLE = pi / 6
-    LEFT_KNEE_STARTING_ANGLE = - pi / 16
-    LEFT_ANKLE_STARTING_ANGLE = pi / 2
-    RIGHT_HIP_STARTING_ANGLE = -pi / 12
-    RIGHT_KNEE_STARTING_ANGLE = 0
-    RIGHT_ANKLE_STARTING_ANGLE = pi / 2
-else:
-    NECK_STARTING_ANGLE = 0
-    LEFT_SHOULDER_STARTING_ANGLE = 0
-    LEFT_ELBOW_STARTING_ANGLE = 0
-    RIGHT_SHOULDER_STARTING_ANGLE = 0
-    RIGHT_ELBOW_STARTING_ANGLE = 0
-    LEFT_HIP_STARTING_ANGLE = - pi / 128  # just enough hip angle to fall forward
-    LEFT_KNEE_STARTING_ANGLE = 0
-    LEFT_ANKLE_STARTING_ANGLE = pi / 2
-    RIGHT_HIP_STARTING_ANGLE = -pi / 128
-    RIGHT_KNEE_STARTING_ANGLE = 0
-    RIGHT_ANKLE_STARTING_ANGLE = pi / 2
+default_joint_angles = {
+    "neck": 0,
+    "left_shoulder": 0,
+    "left_elbow": 0,
+    "right_shoulder": 0,
+    "right_elbow": 0,
+    "left_hip": 0,
+    "left_knee": 0,
+    "left_ankle": (pi / 2),
+    "right_hip": 0,
+    "right_knee": 0,
+    "right_ankle": (pi / 2)
+}
 
 # Collision Types #
 collision_types = {
@@ -132,30 +118,6 @@ class SegmentInfo:
         self.start_speed = STARTING_SPEED
 
 
-class JointInfo:
-    def __init__(self, range, starting_angle):
-        """
-        Object that stores data about a joint
-        :param range: tuple that holds the min and max angle (rad)
-        :param starting_angle: (rad)
-        """
-        self.range = range
-        self.starting_angle = starting_angle
-
-
-joints = {
-    "neck": JointInfo(ranges["neck"], NECK_STARTING_ANGLE),
-    "left_shoulder": JointInfo(ranges["shoulder"], LEFT_SHOULDER_STARTING_ANGLE),
-    "left_elbow": JointInfo(ranges["elbow"], LEFT_ELBOW_STARTING_ANGLE),
-    "right_shoulder": JointInfo(ranges["shoulder"], RIGHT_SHOULDER_STARTING_ANGLE),
-    "right_elbow": JointInfo(ranges["elbow"], RIGHT_ELBOW_STARTING_ANGLE),
-    "left_hip": JointInfo(ranges["hip"], LEFT_HIP_STARTING_ANGLE),
-    "left_knee": JointInfo(ranges["knee"], LEFT_KNEE_STARTING_ANGLE),
-    "left_ankle": JointInfo(ranges["ankle"], LEFT_ANKLE_STARTING_ANGLE),
-    "right_hip": JointInfo(ranges["hip"], RIGHT_HIP_STARTING_ANGLE),
-    "right_knee": JointInfo(ranges["knee"], RIGHT_KNEE_STARTING_ANGLE),
-    "right_ankle": JointInfo(ranges["ankle"], RIGHT_ANKLE_STARTING_ANGLE)
-}
 segments = {}
 for key in mass_fractions:
     segments[key] = SegmentInfo(masses[key], lengths[key], images[key], body_collision_types[key])

@@ -97,9 +97,10 @@ class Simulator:
         """
         pygame.draw.line(self.screen, (0, 0, 0), (x_pos, 0), (x_pos, SCREEN_HEIGHT))
 
-    def evaluate(self, motion_calculator, fitness_calculator):
+    def evaluate(self, joint_angles, motion_calculator, fitness_calculator):
         """
         Runs a full simulation using the given Calculator to control Jerry
+        :param joint_angles: Dictionary of starting position
         :param motion_calculator: MotionCalculator that determines Jerry's motion
         :param fitness_calculator: Determines Jerry's fitness score
         :return: fitness score
@@ -113,7 +114,7 @@ class Simulator:
 
         space = create_space(fall_callback)
 
-        body = HumanBody()
+        body = HumanBody(joint_angles)
         body.add_to_space(space)
 
         frame = 0

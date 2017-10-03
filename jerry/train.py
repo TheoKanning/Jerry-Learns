@@ -21,9 +21,10 @@ def population_fitness(genomes, neat_config):
     pop_stats.individual_number = 1
     for genome_id, genome in genomes:
         net = nn.FeedForwardNetwork.create(genome, neat_config)
+        joint_angles = simulation_config.get_joint_angles()
         motion_calculator = simulation_config.get_motion_calculator(net)
         fitness_calculator = simulation_config.get_fitness_calculator()
-        last_fitness = sim.evaluate(motion_calculator, fitness_calculator)
+        last_fitness = sim.evaluate(joint_angles, motion_calculator, fitness_calculator)
 
         pop_stats.last_fitness = last_fitness
         genome.fitness = last_fitness

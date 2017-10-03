@@ -6,6 +6,22 @@ from ..calculator import MotionCalculator
 from ..config import Config
 from ..fitness import FitnessCalculator
 from ..human_body import BodyCommand
+from math import pi
+
+# starting joint angles
+joints_angles = {
+        "neck": 0,
+        "left_shoulder": (- pi / 4),
+        "left_elbow": (pi / 4),
+        "right_shoulder": (pi / 4),
+        "right_elbow": (pi / 4),
+        "left_hip": (pi / 6),
+        "left_knee": (- pi / 16),
+        "left_ankle": (pi / 2),
+        "right_hip": (-pi / 12),
+        "right_knee": 0,
+        "right_ankle": (pi / 2)
+    }
 
 
 class NeatWalkingMotionCalculator(MotionCalculator):
@@ -74,3 +90,6 @@ class WalkingConfig(Config):
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              config_path)
         return config
+
+    def get_joint_angles(self):
+        return joints_angles
