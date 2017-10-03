@@ -65,7 +65,6 @@ ranges = {
 }
 
 # Joint Starting Angles #
-# todo make a dictionary for these
 if WALKING_START:
     NECK_STARTING_ANGLE = 0
     LEFT_SHOULDER_STARTING_ANGLE = - pi / 4
@@ -133,6 +132,30 @@ class SegmentInfo:
         self.start_speed = STARTING_SPEED
 
 
+class JointInfo:
+    def __init__(self, range, starting_angle):
+        """
+        Object that stores data about a joint
+        :param range: tuple that holds the min and max angle (rad)
+        :param starting_angle: (rad)
+        """
+        self.range = range
+        self.starting_angle = starting_angle
+
+
+joints = {
+    "neck": JointInfo(ranges["neck"], NECK_STARTING_ANGLE),
+    "left_shoulder": JointInfo(ranges["shoulder"], LEFT_SHOULDER_STARTING_ANGLE),
+    "left_elbow": JointInfo(ranges["elbow"], LEFT_ELBOW_STARTING_ANGLE),
+    "right_shoulder": JointInfo(ranges["shoulder"], RIGHT_SHOULDER_STARTING_ANGLE),
+    "right_elbow": JointInfo(ranges["elbow"], RIGHT_ELBOW_STARTING_ANGLE),
+    "left_hip": JointInfo(ranges["hip"], LEFT_HIP_STARTING_ANGLE),
+    "left_knee": JointInfo(ranges["knee"], LEFT_KNEE_STARTING_ANGLE),
+    "left_ankle": JointInfo(ranges["ankle"], LEFT_ANKLE_STARTING_ANGLE),
+    "right_hip": JointInfo(ranges["hip"], RIGHT_HIP_STARTING_ANGLE),
+    "right_knee": JointInfo(ranges["knee"], RIGHT_KNEE_STARTING_ANGLE),
+    "right_ankle": JointInfo(ranges["ankle"], RIGHT_ANKLE_STARTING_ANGLE)
+}
 segments = {}
 for key in mass_fractions:
     segments[key] = SegmentInfo(masses[key], lengths[key], images[key], body_collision_types[key])
