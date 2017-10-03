@@ -4,8 +4,8 @@ import pygame
 import pymunk
 
 from jerry import termination
-from jerry.human_body import HumanBody
-from jerry.human_body_constants import collision_types
+from jerry.body import HumanBody
+from jerry.body_config import collision_types
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600

@@ -5,7 +5,7 @@ import neat
 from ..calculator import MotionCalculator
 from ..config import Config
 from ..fitness import FitnessCalculator
-from ..human_body import BodyCommand
+from ..body import BodyCommand
 from math import pi
 
 # starting joint angles

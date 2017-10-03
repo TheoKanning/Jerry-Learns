@@ -2,9 +2,9 @@ import math
 
 from jerry.joint import Joint
 
-from jerry import human_body_constants as body
-from jerry.human_body_constants import joint_ranges
-from jerry.human_body_constants import segments
+from jerry import body_config as body
+from jerry.body_config import joint_ranges
+from jerry.body_config import segments
 from jerry.segment import Segment
 
 from collections import namedtuple
