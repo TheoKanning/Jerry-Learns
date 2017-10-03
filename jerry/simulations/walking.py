@@ -33,16 +33,22 @@ class NeatWalkingMotionCalculator(MotionCalculator):
         :param outputs: array of outputs of neural network, scaled from -1 to 1 from tanh activation
         :return: scaled outputs that can be used to set body rate
         """
+        # todo this scaling should be a part of the body since it could change if different command options (torques) are added
         return [3 * x for x in outputs]
 
 
 class WalkingFitnessCalculator(FitnessCalculator):
-    # todo subtract starting x position
     def __init__(self):
         self.max_distance = 0
         self.scaled_distance = 0
+        self.includes_start = True
 
     def update(self, body):
+        if self.includes_start:
+            # Remove starting distance from calculation
+            self.scaled_distance -= body.get_distance()
+            self.includes_start = False
+
         distance = body.get_distance()
         multiplier = body.get_score_multiplier()
         if distance > self.max_distance:

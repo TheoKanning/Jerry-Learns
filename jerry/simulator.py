@@ -9,7 +9,7 @@ from jerry.human_body_constants import collision_types
 
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 600
-FRAME_RATE = 50
+FRAME_RATE = 40
 PERIOD = 1.0 / FRAME_RATE
 
 
@@ -81,7 +81,7 @@ class Simulator:
         offset = 8
         for text in self.population_stats.stats_list():
             surface = font.render(text, 1, (0, 0, 0))
-            self.screen.blit(surface, (8, offset))
+            self.screen.blit(surface, (16, offset))
             offset += font.get_height()
 
         offset = 8

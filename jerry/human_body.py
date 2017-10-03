@@ -34,6 +34,7 @@ BodyCommand = namedtuple('BodyCommand', 'left_shoulder_rate \
 
 # todo figure out more extensible way to set rates
 # todo fix this gigantic initialization mess
+# todo keep a list of all parts and add them by iterating
 class HumanBody:
     def __init__(self):
         # Torso
@@ -45,52 +46,42 @@ class HumanBody:
         self.neck = Joint(self.head, self.torso, ranges["neck"])
 
         # Right arm
-        self.right_upper_arm = Segment(segments["upper_arm"], self.torso.get_start_point(),
-                                       angle=body.RIGHT_SHOULDER_STARTING_ANGLE)
-
-        right_elbow_angle = self.right_upper_arm.get_angle() + body.RIGHT_ELBOW_STARTING_ANGLE
-        self.right_forearm = Segment(segments["forearm"], self.right_upper_arm.get_end_point(), angle=right_elbow_angle)
-
-        self.right_shoulder = Joint(self.torso, self.right_upper_arm, ranges["shoulder"], segment_a_end=False)
-        self.right_elbow = Joint(self.right_upper_arm, self.right_forearm, ranges["elbow"])
+        self.right_upper_arm, self.right_shoulder = self.create_segment(self.torso, segments["upper_arm"], body.RIGHT_SHOULDER_STARTING_ANGLE, ranges["shoulder"], attach_to_end=False)
+        self.right_forearm, self.right_elbow = self.create_segment(self.right_upper_arm, segments["forearm"], body.RIGHT_ELBOW_STARTING_ANGLE, ranges["elbow"])
 
         # Left arm
-        self.left_upper_arm = Segment(segments["upper_arm"], self.torso.get_start_point(),
-                                      angle=body.LEFT_SHOULDER_STARTING_ANGLE, )
-
-        left_elbow_angle = self.left_upper_arm.get_angle() + body.LEFT_ELBOW_STARTING_ANGLE
-        self.left_forearm = Segment(segments["forearm"], self.left_upper_arm.get_end_point(), angle=left_elbow_angle)
-
-        self.left_shoulder = Joint(self.torso, self.left_upper_arm, ranges["shoulder"], segment_a_end=False)
-        self.left_elbow = Joint(self.left_upper_arm, self.left_forearm, ranges["elbow"])
-
-        # Left leg
-        left_thigh_angle = self.torso.get_angle() + body.LEFT_HIP_STARTING_ANGLE
-        self.left_thigh = Segment(segments["thigh"], self.torso.get_end_point(), angle=left_thigh_angle, )
-
-        left_calf_angle = self.left_thigh.get_angle() + body.LEFT_KNEE_STARTING_ANGLE
-        self.left_calf = Segment(segments["calf"], self.left_thigh.get_end_point(), angle=left_calf_angle)
-
-        left_foot_angle = self.left_calf.get_angle() + body.LEFT_ANKLE_STARTING_ANGLE
-        self.left_foot = Segment(segments["foot"], self.left_calf.get_end_point(), angle=left_foot_angle)
-
-        self.left_hip = Joint(self.torso, self.left_thigh, ranges["hip"])
-        self.left_knee = Joint(self.left_thigh, self.left_calf, ranges["knee"])
-        self.left_ankle = Joint(self.left_calf, self.left_foot, ranges["ankle"])
+        self.left_upper_arm, self.left_shoulder = self.create_segment(self.torso, segments["upper_arm"],body.LEFT_SHOULDER_STARTING_ANGLE,ranges["shoulder"], attach_to_end=False)
+        self.left_forearm, self.left_elbow = self.create_segment(self.left_upper_arm, segments["forearm"],body.LEFT_ELBOW_STARTING_ANGLE, ranges["elbow"])
 
         # Right leg
-        right_thigh_angle = self.torso.get_angle() + body.RIGHT_HIP_STARTING_ANGLE
-        self.right_thigh = Segment(segments["thigh"], self.torso.get_end_point(), angle=right_thigh_angle)
+        self.right_thigh, self.right_hip = self.create_segment(self.torso, segments["thigh"], body.RIGHT_HIP_STARTING_ANGLE, ranges["hip"])
+        self.right_calf, self.right_knee = self.create_segment(self.right_thigh, segments["calf"], body.RIGHT_KNEE_STARTING_ANGLE, ranges["knee"])
+        self.right_foot, self.right_ankle = self.create_segment(self.right_calf, segments["foot"], body.RIGHT_ANKLE_STARTING_ANGLE, ranges["ankle"])
 
-        right_calf_angle = self.right_thigh.get_angle() + body.RIGHT_KNEE_STARTING_ANGLE
-        self.right_calf = Segment(segments["calf"], self.right_thigh.get_end_point(), angle=right_calf_angle)
+        # Left leg
+        self.left_thigh, self.left_hip = self.create_segment(self.torso, segments["thigh"], body.LEFT_HIP_STARTING_ANGLE, ranges["hip"])
+        self.left_calf, self.left_knee = self.create_segment(self.left_thigh, segments["calf"], body.LEFT_KNEE_STARTING_ANGLE, ranges["knee"])
+        self.left_foot, self.left_ankle = self.create_segment(self.left_calf, segments["foot"], body.LEFT_ANKLE_STARTING_ANGLE, ranges["ankle"])
 
-        right_foot_angle = self.right_calf.get_angle() + body.RIGHT_ANKLE_STARTING_ANGLE
-        self.right_foot = Segment(segments["foot"], self.right_calf.get_end_point(), angle=right_foot_angle)
-
-        self.right_hip = Joint(self.torso, self.right_thigh, ranges["hip"])
-        self.right_knee = Joint(self.right_thigh, self.right_calf, ranges["knee"])
-        self.right_ankle = Joint(self.right_calf, self.right_foot, ranges["ankle"])
+    def create_segment(self, base_segment, segment_info, starting_angle, joint_range, attach_to_end=True):
+        """
+        Creates a new body segment attached to the given segment.
+        :param base_segment: Pre-existing Segment to which the new segment will be attached
+        :param segment_info: A SegmentInfo object that describes how the new Segment should be created
+        :param starting_angle: The new segment's starting angle (rad) relative to the base
+        :param joint_range: A tuple that contains the min and max relative angles (in radians) allowed between segments
+        :param attach_to_end: If True, the new segment will be attached to the end of the base. If False, it will be
+        attached to the start
+        :return: new_segment, joint
+        """
+        if attach_to_end:
+            connection_point = base_segment.get_end_point()
+        else:
+            connection_point = base_segment.get_start_point()
+        new_segment_angle = base_segment.get_angle() + starting_angle
+        new_segment = Segment(segment_info, connection_point, angle=new_segment_angle)
+        new_joint = Joint(base_segment, new_segment, joint_range, attach_to_end)
+        return new_segment, new_joint
 
     def draw(self, screen):
         """
