@@ -31,6 +31,18 @@ BodyCommand = namedtuple('BodyCommand', 'left_shoulder_rate \
                                         right_knee_rate \
                                         right_ankle_rate')
 
+JointAngles = namedtuple('JointAngles', 'neck \
+                                        left_shoulder \
+                                        left_elbow \
+                                        right_shoulder \
+                                        right_elbow \
+                                        left_hip \
+                                        left_knee \
+                                        left_ankle \
+                                        right_hip \
+                                        right_knee \
+                                        right_ankle')
+
 
 # todo figure out more extensible way to set rates
 class Body:
@@ -47,52 +59,52 @@ class Body:
         self.right_upper_arm, self.right_shoulder = self.create_segment(self.torso,
                                                                         segments["upper_arm"],
                                                                         joint_ranges["shoulder"],
-                                                                        joint_angles["right_shoulder"],
+                                                                        joint_angles.right_shoulder,
                                                                         attach_to_end=False)
 
         self.right_forearm, self.right_elbow = self.create_segment(self.right_upper_arm,
                                                                    segments["forearm"],
                                                                    joint_ranges["elbow"],
-                                                                   joint_angles["right_elbow"])
+                                                                   joint_angles.right_elbow)
 
         # Left arm
         self.left_upper_arm, self.left_shoulder = self.create_segment(self.torso,
                                                                       segments["upper_arm"],
                                                                       joint_ranges["shoulder"],
-                                                                      joint_angles["left_shoulder"],
+                                                                      joint_angles.left_shoulder,
                                                                       attach_to_end=False)
         self.left_forearm, self.left_elbow = self.create_segment(self.left_upper_arm,
                                                                  segments["forearm"],
                                                                  joint_ranges["elbow"],
-                                                                 joint_angles["left_elbow"])
+                                                                 joint_angles.left_elbow)
 
         # Right leg
         self.right_thigh, self.right_hip = self.create_segment(self.torso,
                                                                segments["thigh"],
                                                                joint_ranges["hip"],
-                                                               joint_angles["right_hip"])
+                                                               joint_angles.right_hip)
         self.right_calf, self.right_knee = self.create_segment(self.right_thigh,
                                                                segments["calf"],
                                                                joint_ranges["knee"],
-                                                               joint_angles["right_knee"])
+                                                               joint_angles.right_knee)
         self.right_foot, self.right_ankle = self.create_segment(self.right_calf,
                                                                 segments["foot"],
                                                                 joint_ranges["ankle"],
-                                                                joint_angles["right_ankle"])
+                                                                joint_angles.right_ankle)
 
         # Left leg
         self.left_thigh, self.left_hip = self.create_segment(self.torso,
                                                              segments["thigh"],
                                                              joint_ranges["hip"],
-                                                             joint_angles["left_hip"])
+                                                             joint_angles.left_hip)
         self.left_calf, self.left_knee = self.create_segment(self.left_thigh,
                                                              segments["calf"],
                                                              joint_ranges["knee"],
-                                                             joint_angles['left_knee'])
+                                                             joint_angles.left_knee)
         self.left_foot, self.left_ankle = self.create_segment(self.left_calf,
                                                               segments["foot"],
                                                               joint_ranges["ankle"],
-                                                              joint_angles["left_ankle"])
+                                                              joint_angles.left_ankle)
 
     def create_segment(self, base_segment, segment_info, joint_range, starting_angle, attach_to_end=True):
         """
@@ -219,6 +231,9 @@ class Body:
         Returns x position of the torso
         """
         return self.torso.body.position[0]
+
+    def get_angle(self):
+        return self.torso.get_angle()
 
     def get_score_multiplier(self):
         # todo move this to WalkingFitnessCalculator
