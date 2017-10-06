@@ -16,17 +16,20 @@ KNEE_ANGLE = 0
 ANKLE_ANGLE = (pi / 2)
 
 # starting joint angles
-joint_angles = body.JointAngles(neck=0,
+joint_angles = body.JointAngles(neck=pi,
                                 left_shoulder=SHOULDER_ANGLE,
                                 left_elbow=ELBOW_ANGLE,
                                 right_shoulder=SHOULDER_ANGLE,
                                 right_elbow=ELBOW_ANGLE,
+                                torso=pi/4,
                                 left_hip=HIP_ANGLE,
                                 left_knee=KNEE_ANGLE,
                                 left_ankle=ANKLE_ANGLE,
                                 right_hip=HIP_ANGLE,
                                 right_knee=KNEE_ANGLE,
-                                right_ankle=ANKLE_ANGLE)
+                                right_ankle=ANKLE_ANGLE,
+                                x_position=100,
+                                y_position=280)
 
 
 class NeatBackflipMotionCalculator(MotionCalculator):

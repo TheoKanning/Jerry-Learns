@@ -36,24 +36,31 @@ JointAngles = namedtuple('JointAngles', 'neck \
                                         left_elbow \
                                         right_shoulder \
                                         right_elbow \
+                                        torso \
                                         left_hip \
                                         left_knee \
                                         left_ankle \
                                         right_hip \
                                         right_knee \
-                                        right_ankle')
+                                        right_ankle \
+                                        x_position \
+                                        y_position')
 
 
 # todo figure out more extensible way to set rates
 class Body:
     def __init__(self, joint_angles):
         # Torso
-        self.torso = Segment(segments["torso"], body.TORSO_POSITION)
+        torso_position = (joint_angles.x_position, joint_angles.y_position)
+        self.torso = Segment(segments["torso"], torso_position, angle=joint_angles.torso)
         self.initial_height = self.torso.body.position[1]
 
         # Head
-        self.head = Segment(segments["head"], body.HEAD_POSITION)
-        self.neck = Joint(self.head, self.torso, joint_ranges["neck"])
+        self.head, self.neck = self.create_segment(self.torso,
+                                                   segments["head"],
+                                                   joint_ranges["neck"],
+                                                   joint_angles.neck,
+                                                   attach_to_end=False)
 
         # Right arm
         self.right_upper_arm, self.right_shoulder = self.create_segment(self.torso,

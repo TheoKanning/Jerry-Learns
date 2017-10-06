@@ -54,7 +54,7 @@ TORSO_POSITION = STARTING_X_POSITION, TOTAL_HEIGHT * HIP_STARTING_HEIGHT_FRACTIO
 
 # Joint Constraints #
 joint_ranges = {
-    "neck": (0, 0),
+    "neck": (3 * pi / 4, 5 * pi / 4),
     "elbow": (0, 3 * pi / 4),
     "shoulder": (-pi / 2, pi),
     "hip": (-pi / 8, pi / 3),
@@ -63,7 +63,7 @@ joint_ranges = {
 }
 
 default_joint_angles = {
-    "neck": 0,
+    "neck": pi,
     "left_shoulder": 0,
     "left_elbow": 0,
     "right_shoulder": 0,
