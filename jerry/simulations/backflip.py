@@ -9,11 +9,11 @@ from ..body import BodyCommand
 from math import pi
 import jerry.body as body
 
-SHOULDER_ANGLE = 0
+SHOULDER_ANGLE = -pi / 6
 ELBOW_ANGLE = 0
-HIP_ANGLE = 0
-KNEE_ANGLE = 0
-ANKLE_ANGLE = (pi / 2)
+HIP_ANGLE = pi / 2
+KNEE_ANGLE = -pi / 3
+ANKLE_ANGLE = (2 * pi / 3)
 
 # starting joint angles
 joint_angles = body.JointAngles(neck=pi,
@@ -21,15 +21,15 @@ joint_angles = body.JointAngles(neck=pi,
                                 left_elbow=ELBOW_ANGLE,
                                 right_shoulder=SHOULDER_ANGLE,
                                 right_elbow=ELBOW_ANGLE,
-                                torso=pi/4,
+                                torso=-pi / 4,
                                 left_hip=HIP_ANGLE,
                                 left_knee=KNEE_ANGLE,
                                 left_ankle=ANKLE_ANGLE,
                                 right_hip=HIP_ANGLE,
                                 right_knee=KNEE_ANGLE,
                                 right_ankle=ANKLE_ANGLE,
-                                x_position=100,
-                                y_position=280)
+                                x_position=700,
+                                y_position=220)
 
 
 class NeatBackflipMotionCalculator(MotionCalculator):
@@ -57,7 +57,7 @@ class NeatBackflipMotionCalculator(MotionCalculator):
         :return: scaled outputs that can be used to set body rate
         """
         # todo this scaling should be a part of the body since it could change if different command options (torques) are added
-        return [3 * x for x in outputs]
+        return [20 * x for x in outputs]
 
 
 class BackflipFitnessCalculator(FitnessCalculator):
