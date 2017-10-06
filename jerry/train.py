@@ -46,7 +46,7 @@ def main():
     config = simulation_config.get_neat_config()
     pop = population.Population(config)
     pop.add_reporter(pop_stats.reporter)
-    pop.run(population_fitness, n=30)
+    pop.run(population_fitness, n=100)
 
 
 if __name__ == '__main__':

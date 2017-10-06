@@ -1,13 +1,10 @@
 import math
+from collections import namedtuple
 
-from jerry.joint import Joint
-
-from jerry import body_config as body
 from jerry.body_config import joint_ranges
 from jerry.body_config import segments
+from jerry.joint import Joint
 from jerry.segment import Segment
-
-from collections import namedtuple
 
 # tuple to store current body angle to report to rest of simulation
 BodyState = namedtuple('BodyState', 'torso_angle \

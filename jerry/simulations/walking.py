@@ -9,24 +9,23 @@ from ..body import BodyCommand
 from math import pi
 import jerry.body as body
 
-# starting joint angles
-joints_angles = {
-        "neck": 0,
-        "left_shoulder": (- pi / 4),
-        "left_elbow": (pi / 4),
-        "right_shoulder": (pi / 4),
-        "right_elbow": (pi / 4),
-        "left_hip": (pi / 6),
-        "left_knee": (- pi / 16),
-        "left_ankle": (pi / 2),
-        "right_hip": (-pi / 12),
-        "right_knee": 0,
-        "right_ankle": (pi / 2)
-    }
+joint_angles = body.JointAngles(neck=pi,
+                                left_shoulder=-pi / 4,
+                                left_elbow=pi / 4,
+                                right_shoulder=pi / 4,
+                                right_elbow=pi / 4,
+                                torso=-0,
+                                left_hip=pi / 6,
+                                left_knee=-pi / 6,
+                                left_ankle=pi / 2,
+                                right_hip=-pi / 12,
+                                right_knee=0,
+                                right_ankle=pi / 2,
+                                x_position=100,
+                                y_position=278)
 
 
 class NeatWalkingMotionCalculator(MotionCalculator):
-    # If more Neat calculators are added, create a super class to handle converting between tuples and Neat arrays
     def __init__(self, network):
         """
         :param network: NEAT network
@@ -93,4 +92,4 @@ class WalkingConfig(Config):
         return config
 
     def get_body(self):
-        return body.Body(joints_angles)
+        return body.Body(joint_angles)
