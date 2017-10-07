@@ -10,7 +10,9 @@ from jerry.segment import Segment
 BodyState = namedtuple('BodyState', 'torso_angle \
                                     torso_rate \
                                     left_shoulder_angle \
+                                    left_elbow_angle \
                                     right_shoulder_angle \
+                                    right_elbow_angle \
                                     left_hip_angle \
                                     left_knee_angle \
                                     left_ankle_angle \
@@ -20,7 +22,9 @@ BodyState = namedtuple('BodyState', 'torso_angle \
 
 # tuple to send a set of joint commands, each torque command should be between -1 and 1
 BodyCommand = namedtuple('BodyCommand', 'left_shoulder_torque \
+                                        left_elbow_torque \
                                         right_shoulder_torque \
+                                        right_elbow_torque \
                                         left_hip_torque \
                                         left_knee_torque \
                                         left_ankle_torque \
@@ -59,18 +63,6 @@ class Body:
                                                    joint_angles.neck,
                                                    attach_to_end=False)
 
-        # Right arm
-        self.right_upper_arm, self.right_shoulder = self.create_segment(self.torso,
-                                                                        segments["upper_arm"],
-                                                                        joints["shoulder"],
-                                                                        joint_angles.right_shoulder,
-                                                                        attach_to_end=False)
-
-        self.right_forearm, self.right_elbow = self.create_segment(self.right_upper_arm,
-                                                                   segments["forearm"],
-                                                                   joints["elbow"],
-                                                                   joint_angles.right_elbow)
-
         # Left arm
         self.left_upper_arm, self.left_shoulder = self.create_segment(self.torso,
                                                                       segments["upper_arm"],
@@ -82,19 +74,17 @@ class Body:
                                                                  joints["elbow"],
                                                                  joint_angles.left_elbow)
 
-        # Right leg
-        self.right_thigh, self.right_hip = self.create_segment(self.torso,
-                                                               segments["thigh"],
-                                                               joints["hip"],
-                                                               joint_angles.right_hip)
-        self.right_calf, self.right_knee = self.create_segment(self.right_thigh,
-                                                               segments["calf"],
-                                                               joints["knee"],
-                                                               joint_angles.right_knee)
-        self.right_foot, self.right_ankle = self.create_segment(self.right_calf,
-                                                                segments["foot"],
-                                                                joints["ankle"],
-                                                                joint_angles.right_ankle)
+        # Right arm
+        self.right_upper_arm, self.right_shoulder = self.create_segment(self.torso,
+                                                                        segments["upper_arm"],
+                                                                        joints["shoulder"],
+                                                                        joint_angles.right_shoulder,
+                                                                        attach_to_end=False)
+
+        self.right_forearm, self.right_elbow = self.create_segment(self.right_upper_arm,
+                                                                   segments["forearm"],
+                                                                   joints["elbow"],
+                                                                   joint_angles.right_elbow)
 
         # Left leg
         self.left_thigh, self.left_hip = self.create_segment(self.torso,
@@ -109,6 +99,20 @@ class Body:
                                                               segments["foot"],
                                                               joints["ankle"],
                                                               joint_angles.left_ankle)
+
+        # Right leg
+        self.right_thigh, self.right_hip = self.create_segment(self.torso,
+                                                               segments["thigh"],
+                                                               joints["hip"],
+                                                               joint_angles.right_hip)
+        self.right_calf, self.right_knee = self.create_segment(self.right_thigh,
+                                                               segments["calf"],
+                                                               joints["knee"],
+                                                               joint_angles.right_knee)
+        self.right_foot, self.right_ankle = self.create_segment(self.right_calf,
+                                                                segments["foot"],
+                                                                joints["ankle"],
+                                                                joint_angles.right_ankle)
 
     def create_segment(self, base_segment, segment_info, joint_info, starting_angle, attach_to_end=True):
         """
@@ -206,7 +210,9 @@ class Body:
         state = BodyState(self.torso.get_angle(),
                           self.torso.get_rate(),
                           self.left_shoulder.get_angle(),
+                          self.left_elbow.get_angle(),
                           self.right_shoulder.get_angle(),
+                          self.right_elbow.get_angle(),
                           self.left_hip.get_angle(),
                           self.left_knee.get_angle(),
                           self.left_ankle.get_angle(),
@@ -222,7 +228,9 @@ class Body:
         """
 
         self.left_shoulder.set_torque(command.left_shoulder_torque)
+        self.left_elbow.set_torque(command.left_elbow_torque)
         self.right_shoulder.set_torque(command.right_shoulder_torque)
+        self.right_elbow.set_torque(command.right_elbow_torque)
         self.left_hip.set_torque(command.left_hip_torque)
         self.left_knee.set_torque(command.left_knee_torque)
         self.left_ankle.set_torque(command.left_ankle_torque)
