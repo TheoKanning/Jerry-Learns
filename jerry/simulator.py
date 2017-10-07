@@ -124,7 +124,8 @@ class Simulator:
                 if event.type == pygame.QUIT:
                     sys.exit()
 
-            fitness_calculator.update(body)
+            if not run_terminator.has_fallen():
+                fitness_calculator.update(body)
 
             run_terminator.update(body)
 
