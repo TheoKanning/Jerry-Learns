@@ -247,22 +247,5 @@ class Body:
     def get_angle(self):
         return self.torso.get_angle()
 
-    def get_score_multiplier(self):
-        # todo move this to WalkingFitnessCalculator
-        """
-        Returns a multiplier based on the current torso angle and height, staying vertical and high gives a higher score
-        :return: score from 0 to 1
-        """
-        angle = abs(self.torso.get_angle())
-        if angle > math.pi / 6:  # 30 degrees
-            return 0
-        else:
-            angle_score = math.cos(3 * angle)  # smoothly interpolate between 1 at 0 degrees and 0 at 30 degrees
-
-        torso_height = self.torso.body.position[1]
-        if torso_height > self.initial_height:
-            height_score = 1
-        else:
-            height_score = torso_height / self.initial_height
-
-        return angle_score * height_score
+    def get_height(self):
+        return self.torso.body.position[1]

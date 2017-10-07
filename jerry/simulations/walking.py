@@ -1,13 +1,14 @@
+import math
 import os
+from math import pi
 
 import neat
 
+import jerry.body as body
+from ..body import BodyCommand
 from ..calculator import MotionCalculator
 from ..config import Config
 from ..fitness import FitnessCalculator
-from ..body import BodyCommand
-from math import pi
-import jerry.body as body
 
 joint_angles = body.JointAngles(neck=pi,
                                 left_shoulder=-pi / 4,
@@ -46,9 +47,11 @@ class NeatWalkingMotionCalculator(MotionCalculator):
 
 class WalkingFitnessCalculator(FitnessCalculator):
     def __init__(self):
+        # todo if this were instantiated inside the simulation, then a Body instance could be passed in here
         self.max_distance = 0
         self.scaled_distance = 0
         self.includes_start = True
+        self.initial_height = None
 
     def update(self, body):
         if self.includes_start:
@@ -57,7 +60,7 @@ class WalkingFitnessCalculator(FitnessCalculator):
             self.includes_start = False
 
         distance = body.get_distance()
-        multiplier = body.get_score_multiplier()
+        multiplier = self.__get_score_multiplier(body)
         if distance > self.max_distance:
             # multiply new distance by current score multiplier
             self.scaled_distance += multiplier * (distance - self.max_distance)
@@ -65,6 +68,28 @@ class WalkingFitnessCalculator(FitnessCalculator):
 
     def get_fitness(self):
         return self.scaled_distance
+
+    def __get_score_multiplier(self, body):
+        """
+        Calculates a score multiplier based on the body's current height and angle. Rewards staying tall and straight
+        :param body: Body object that's being simulater
+        :return: Fraction of score to be awarded
+        """
+        if self.initial_height is None:
+            self.initial_height = body.get_height()
+        angle = abs(body.get_angle())
+        if angle > math.pi / 6:  # 30 degrees
+            return 0
+        else:
+            angle_score = math.cos(3 * angle)  # smoothly interpolate between 1 at 0 degrees and 0 at 30 degrees
+
+        torso_height = body.get_height()
+        if torso_height > self.initial_height:
+            height_score = 1
+        else:
+            height_score = torso_height / self.initial_height
+
+        return angle_score * height_score
 
 
 class WalkingConfig(Config):

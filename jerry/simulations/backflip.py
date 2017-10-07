@@ -29,7 +29,7 @@ joint_angles = body.JointAngles(neck=pi,
                                 right_knee=KNEE_ANGLE,
                                 right_ankle=ANKLE_ANGLE,
                                 x_position=700,
-                                y_position=220)
+                                y_position=222)
 
 
 class NeatBackflipMotionCalculator(MotionCalculator):
@@ -66,9 +66,13 @@ class BackflipFitnessCalculator(FitnessCalculator):
         self.max_distance = 0
         self.total_rotation = 0
         self.last_angle = None
+        self.start_height = None
 
     def update(self, body):
         angle = body.get_angle()
+        if self.start_height is None:
+            self.start_height = body.get
+
         if self.last_angle is not None:
             self.total_rotation += angle - self.last_angle
 

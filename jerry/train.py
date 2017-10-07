@@ -4,12 +4,12 @@ from neat import nn, population
 
 from jerry import record, stats
 from jerry import simulator
-from jerry.simulations import backflip
+from jerry.simulations import backflip, walking
 
 pop_stats = stats.PopulationStats()
 sim = simulator.Simulator(pop_stats)
 record_genomes = False
-simulation_config = backflip.BackflipConfig()
+simulation_config = walking.WalkingConfig()
 
 
 def population_fitness(genomes, neat_config):
