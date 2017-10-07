@@ -2,7 +2,7 @@ import math
 import pymunk
 
 ROTARY_JOINT_MAX_TORQUE = 5000000  # The maximum torque that can be exerted to keep the joint within range
-MOTOR_MAX_TORQUE = 2000000  # The maximum torque that the muscles of this joint, lower than rotary joint max force
+MOTOR_MAX_TORQUE = 1500000  # The maximum torque that the muscles of this joint, lower than rotary joint max force
 
 
 class Joint:

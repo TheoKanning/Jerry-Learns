@@ -46,7 +46,7 @@ joint_ranges = {
     "neck": (3 * pi / 4, 5 * pi / 4),
     "elbow": (0, 3 * pi / 4),
     "shoulder": (-pi / 2, pi),
-    "hip": (-pi / 8, pi / 3),
+    "hip": (-pi / 8, pi / 2),
     "knee": (-3 * pi / 4, 0),
     "ankle": (0, 2 * pi / 3)
 }

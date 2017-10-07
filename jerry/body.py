@@ -18,15 +18,15 @@ BodyState = namedtuple('BodyState', 'torso_angle \
                                     right_knee_angle \
                                     right_ankle_angle')
 
-# tuple to send a set of joint commands
-BodyCommand = namedtuple('BodyCommand', 'left_shoulder_rate \
-                                        right_shoulder_rate \
-                                        left_hip_rate \
-                                        left_knee_rate \
-                                        left_ankle_rate \
-                                        right_hip_rate \
-                                        right_knee_rate \
-                                        right_ankle_rate')
+# tuple to send a set of joint commands, each torque command should be between -1 and 1
+BodyCommand = namedtuple('BodyCommand', 'left_shoulder_torque \
+                                        right_shoulder_torque \
+                                        left_hip_torque \
+                                        left_knee_torque \
+                                        left_ankle_torque \
+                                        right_hip_torque \
+                                        right_knee_torque \
+                                        right_ankle_torque')
 
 JointAngles = namedtuple('JointAngles', 'neck \
                                         left_shoulder \
@@ -221,14 +221,14 @@ class Body:
         Takes a BodyCommand object and sets the corresponding rates
         """
 
-        self.left_shoulder.set_rate(command.left_shoulder_rate)
-        self.right_shoulder.set_rate(command.right_shoulder_rate)
-        self.left_hip.set_rate(command.left_hip_rate)
-        self.left_knee.set_rate(command.left_knee_rate)
-        self.left_ankle.set_rate(command.left_ankle_rate)
-        self.right_hip.set_rate(command.right_hip_rate)
-        self.right_knee.set_rate(command.right_knee_rate)
-        self.right_ankle.set_rate(command.right_ankle_rate)
+        self.left_shoulder.set_torque(command.left_shoulder_torque)
+        self.right_shoulder.set_torque(command.right_shoulder_torque)
+        self.left_hip.set_torque(command.left_hip_torque)
+        self.left_knee.set_torque(command.left_knee_torque)
+        self.left_ankle.set_torque(command.left_ankle_torque)
+        self.right_hip.set_torque(command.right_hip_torque)
+        self.right_knee.set_torque(command.right_knee_torque)
+        self.right_ankle.set_torque(command.right_ankle_torque)
 
     def get_distance(self):
         """

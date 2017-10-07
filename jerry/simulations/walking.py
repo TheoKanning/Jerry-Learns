@@ -39,18 +39,9 @@ class NeatWalkingMotionCalculator(MotionCalculator):
         :param body_state: BodyState object
         :return: BodyCommand object
         """
-        outputs = self.scale_outputs(self.network.activate(body_state))
+        outputs = self.network.activate(body_state)
         command = BodyCommand(*outputs)
         return command
-
-    def scale_outputs(self, outputs):
-        """
-        Scale neural network outputs between -3 and 3
-        :param outputs: array of outputs of neural network, scaled from -1 to 1 from tanh activation
-        :return: scaled outputs that can be used to set body rate
-        """
-        # todo this scaling should be a part of the body since it could change if different command options (torques) are added
-        return [3 * x for x in outputs]
 
 
 class WalkingFitnessCalculator(FitnessCalculator):
