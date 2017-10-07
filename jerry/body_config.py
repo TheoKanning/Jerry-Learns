@@ -7,6 +7,7 @@ import pygame
 TOTAL_MASS = 80  # Made up units
 TOTAL_HEIGHT = 350  # Pygame pixels
 STARTING_SPEED = 0, 0  # pixels/sec?
+BASE_STRENGTH = 200000
 
 # Mass Fractions #
 mass_fractions = {
@@ -50,6 +51,15 @@ joint_ranges = {
     "ankle": (0, 2 * pi / 3)
 }
 
+joint_strengths = {
+    "neck": .15 * BASE_STRENGTH,
+    "elbow": .3 * BASE_STRENGTH,
+    "shoulder": .5 * BASE_STRENGTH,
+    "hip": .8 * BASE_STRENGTH,
+    "knee": .8 * BASE_STRENGTH,
+    "ankle": .4 * BASE_STRENGTH
+}
+
 # Collision Types #
 collision_types = {
     "upper": 1,
@@ -81,5 +91,11 @@ images = {
 SegmentInfo = namedtuple('SegmentInfo', 'mass length start_speed collision_type image')
 
 segments = {}
+# todo I don't like this loop, it assumes that all other dictionaries have the same keys
 for key in mass_fractions:
     segments[key] = SegmentInfo(masses[key], lengths[key], STARTING_SPEED, body_collision_types[key], images[key])
+
+JointInfo = namedtuple('JointInfo', 'range strength')
+joints = {}
+for key in joint_ranges:
+    joints[key] = JointInfo(joint_ranges[key], joint_strengths[key])

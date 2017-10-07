@@ -1,6 +1,9 @@
 import math
 import pymunk
 
+ROTARY_JOINT_MAX_FORCE = 5000000  # The maximum force that can be exerted to keep the joint within range
+MOTOR_MAX_FORCE = 2000000  # The maximum torque that the muscles of this joint, lower than rotary joint max force
+
 
 class Joint:
     def __init__(self, base_segment, branch_segment, angular_range, attach_to_end=True, max_force=None):
@@ -22,13 +25,14 @@ class Joint:
             segment_a_position = base_segment.shape.a
 
         self.pivot = pymunk.PivotJoint(self.base_body, self.branch_body, segment_a_position, branch_segment.shape.a)
-        self.rotary_limit = pymunk.RotaryLimitJoint(self.base_body, self.branch_body, angular_range[0], angular_range[1])
-        self.rotary_limit.max_force = 5000000  # finite limit prevents bouncing, double the max motor force
+        self.rotary_limit = pymunk.RotaryLimitJoint(self.base_body, self.branch_body, angular_range[0],
+                                                    angular_range[1])
+        self.rotary_limit.max_force = ROTARY_JOINT_MAX_FORCE
         self.motor = pymunk.SimpleMotor(self.base_body, self.branch_body, 0)
         if max_force is not None:
             self.motor.max_force = max_force
         else:
-            self.motor.max_force = 2000000  # High enough to be strong but won't break rotary limit constraints
+            self.motor.max_force = MOTOR_MAX_FORCE  # High enough to be strong but won't break rotary limit constraints
 
     def add_to_space(self, space):
         """
