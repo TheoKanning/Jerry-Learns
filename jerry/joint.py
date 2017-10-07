@@ -28,6 +28,7 @@ class Joint:
         self.rotary_limit = pymunk.RotaryLimitJoint(self.base_body, self.branch_body, *angular_range)
         self.rotary_limit.max_force = ROTARY_JOINT_MAX_TORQUE
         self.motor = pymunk.SimpleMotor(self.base_body, self.branch_body, 0)
+        self.motor.max_force = max_torque
         self.max_torque = max_torque
 
     def add_to_space(self, space):

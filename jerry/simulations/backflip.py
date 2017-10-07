@@ -12,7 +12,7 @@ import jerry.body as body
 SHOULDER_ANGLE = -pi / 6
 ELBOW_ANGLE = 0
 HIP_ANGLE = pi / 2
-KNEE_ANGLE = -pi / 3
+KNEE_ANGLE = -pi / 2
 ANKLE_ANGLE = (2 * pi / 3)
 
 # starting joint angles
@@ -21,7 +21,7 @@ joint_angles = body.JointAngles(neck=pi,
                                 left_elbow=ELBOW_ANGLE,
                                 right_shoulder=SHOULDER_ANGLE,
                                 right_elbow=ELBOW_ANGLE,
-                                torso=-pi / 4,
+                                torso=-pi / 6,
                                 left_hip=HIP_ANGLE,
                                 left_knee=KNEE_ANGLE,
                                 left_ankle=ANKLE_ANGLE,
@@ -39,6 +39,7 @@ class NeatBackflipMotionCalculator(MotionCalculator):
         """
         super()
         self.network = network
+        self.first_outputs = None
 
     def calculate(self, body_state):
         """
@@ -48,6 +49,15 @@ class NeatBackflipMotionCalculator(MotionCalculator):
         """
         outputs = self.network.activate(body_state)
         command = BodyCommand(*outputs)
+        if self.first_outputs is None:
+            self.first_outputs = outputs
+            print("\n\nStarting new simulation")
+
+        sum_error = 0
+        for (first, current) in zip(self.first_outputs, outputs):
+            sum_error += abs(first - current)
+
+        print("{0:.3f}".format(sum_error/len(outputs)))
         return command
 
 

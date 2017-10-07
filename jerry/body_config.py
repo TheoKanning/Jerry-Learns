@@ -4,10 +4,10 @@ from math import pi
 import pygame
 
 # Size and Weight Constants
-TOTAL_MASS = 80  # Made up units
+TOTAL_MASS = 20  # Made up units
 TOTAL_HEIGHT = 350  # Pygame pixels
 STARTING_SPEED = 0, 0  # pixels/sec?
-BASE_STRENGTH = 200000
+BASE_STRENGTH = 1500000
 
 # Mass Fractions #
 mass_fractions = {
@@ -95,7 +95,7 @@ segments = {}
 for key in mass_fractions:
     segments[key] = SegmentInfo(masses[key], lengths[key], STARTING_SPEED, body_collision_types[key], images[key])
 
-JointInfo = namedtuple('JointInfo', 'range strength')
+JointInfo = namedtuple('JointInfo', 'range max_torque')
 joints = {}
 for key in joint_ranges:
     joints[key] = JointInfo(joint_ranges[key], joint_strengths[key])

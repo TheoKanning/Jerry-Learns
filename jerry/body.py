@@ -131,7 +131,7 @@ class Body:
             connection_point = base_segment.get_start_point()
         new_segment_angle = base_segment.get_angle() + starting_angle
         new_segment = Segment(segment_info, connection_point, angle=new_segment_angle)
-        new_joint = Joint(base_segment, new_segment, joint_info.range, attach_to_end)
+        new_joint = Joint(base_segment, new_segment, joint_info.range, attach_to_end, joint_info.max_torque)
         return new_segment, new_joint
 
     def draw(self, screen):
