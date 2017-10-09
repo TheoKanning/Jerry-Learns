@@ -29,7 +29,7 @@ joint_angles = body.JointAngles(neck=pi,
                                 right_knee=KNEE_ANGLE,
                                 right_ankle=ANKLE_ANGLE,
                                 x_position=700,
-                                y_position=222)
+                                y_position=225)
 
 
 class NeatBackflipMotionCalculator(MotionCalculator):
@@ -57,7 +57,7 @@ class NeatBackflipMotionCalculator(MotionCalculator):
         for (first, current) in zip(self.first_outputs, outputs):
             sum_error += abs(first - current)
 
-        print("{0:.3f}".format(sum_error/len(outputs)))
+        print("{0:.3f}".format(sum_error / len(outputs)))
         return command
 
 
@@ -66,20 +66,30 @@ class BackflipFitnessCalculator(FitnessCalculator):
         self.max_distance = 0
         self.total_rotation = 0
         self.last_angle = None
-        self.start_height = None
+        self.initial_height = None
 
     def update(self, body):
         angle = body.get_angle()
-        if self.start_height is None:
-            self.start_height = body.get
 
         if self.last_angle is not None:
-            self.total_rotation += angle - self.last_angle
+            multiplier = self.__get_score_multiplier(body)
+            self.total_rotation += multiplier * (angle - self.last_angle)
 
         self.last_angle = angle
 
     def get_fitness(self):
         return self.total_rotation * 50
+
+    def __get_score_multiplier(self, body):
+        """
+        Calculates a score multiplier based on the body's height. Rewards staying high.
+        :param body: Body object being simulated
+        :return: Fraction of score to be awarded
+        """
+        if self.initial_height is None:
+            self.initial_height = body.get_height()
+
+        return body.get_height() / self.initial_height
 
 
 class BackflipConfig(Config):

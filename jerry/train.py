@@ -9,7 +9,7 @@ from jerry.simulations import backflip, walking
 pop_stats = stats.PopulationStats()
 sim = simulator.Simulator(pop_stats)
 record_genomes = False
-simulation_config = walking.WalkingConfig()
+simulation_config = backflip.BackflipConfig()
 
 
 def population_fitness(genomes, neat_config):
