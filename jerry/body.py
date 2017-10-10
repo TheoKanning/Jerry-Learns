@@ -1,4 +1,3 @@
-import math
 from collections import namedtuple
 
 from jerry.body_config import joints
@@ -18,7 +17,17 @@ BodyState = namedtuple('BodyState', 'torso_angle \
                                     left_ankle_angle \
                                     right_hip_angle \
                                     right_knee_angle \
-                                    right_ankle_angle')
+                                    right_ankle_angle \
+                                    left_shoulder_rate \
+                                    left_elbow_rate \
+                                    right_shoulder_rate \
+                                    right_elbow_rate \
+                                    left_hip_rate \
+                                    left_knee_rate \
+                                    left_ankle_rate \
+                                    right_hip_rate \
+                                    right_knee_rate \
+                                    right_ankle_rate')
 
 # tuple to send a set of joint commands, each torque command should be between -1 and 1
 BodyCommand = namedtuple('BodyCommand', 'left_shoulder_torque \
@@ -207,9 +216,9 @@ class Body:
         Returns a BodyState containing all relevant state info
         :return: BodyState object
         """
-        state = BodyState(self.torso.get_angle(),
+        state = BodyState(self.torso.get_angle(),  # Torso
                           self.torso.get_rate(),
-                          self.left_shoulder.get_angle(),
+                          self.left_shoulder.get_angle(),  # Joint angles
                           self.left_elbow.get_angle(),
                           self.right_shoulder.get_angle(),
                           self.right_elbow.get_angle(),
@@ -218,7 +227,17 @@ class Body:
                           self.left_ankle.get_angle(),
                           self.right_hip.get_angle(),
                           self.right_knee.get_angle(),
-                          self.right_ankle.get_angle())
+                          self.right_ankle.get_angle(),
+                          self.left_shoulder.get_rate(),  # Joint rates
+                          self.left_elbow.get_rate(),
+                          self.right_shoulder.get_rate(),
+                          self.right_elbow.get_rate(),
+                          self.left_hip.get_rate(),
+                          self.left_knee.get_rate(),
+                          self.left_ankle.get_rate(),
+                          self.right_hip.get_rate(),
+                          self.right_knee.get_rate(),
+                          self.right_ankle.get_rate())
 
         return state
 

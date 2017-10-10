@@ -3,6 +3,7 @@ import pymunk
 
 ROTARY_JOINT_MAX_TORQUE = 5000000  # The maximum torque that can be exerted to keep the joint within range
 MOTOR_MAX_TORQUE = 1500000  # The maximum torque that the muscles of this joint, lower than rotary joint max force
+MAX_SPEED = 20  # rad/s
 
 
 class Joint:
@@ -55,14 +56,14 @@ class Joint:
         """
         clamped_torque = max(-1, min(1, torque))
         self.motor.max_force = abs(clamped_torque) * self.max_torque
-        self.motor.rate = 20 * (1 if torque > 0 else -1)
+        self.motor.rate = MAX_SPEED * (1 if torque > 0 else -1)
 
     def get_rate(self):
         """
         Returns the angular rate of change of this joint, defined as the angular velocity of body a minus that of body b
         :return: the rate at which this joint's angle is changing, in radians/second
         """
-        return self.base_body.angular_velocity - self.branch_body.angular_velocity
+        return (self.base_body.angular_velocity - self.branch_body.angular_velocity) / 10  # hack to reduce weight in NN
 
     def get_angle(self):
         """

@@ -6,7 +6,7 @@ reset_on_extinction     = False
 
 [DefaultGenome]
 # network parameters
-num_inputs              = 12
+num_inputs              = 22
 num_hidden              = 0
 num_outputs             = 10
 
