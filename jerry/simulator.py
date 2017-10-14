@@ -70,7 +70,7 @@ class Simulator:
         self.record_frames = record_frames
 
         pygame.init()
-        pygame.display.set_caption("Jerry's First Steps")
+        pygame.display.set_caption("Jerry Learns")
 
     def draw_stats(self):
         """

@@ -1,6 +1,7 @@
 # Jerry Learns #
-![asdf](screenshot.png)
 This simulation of Jerry Smith can be taught to walk or backflip using a NEAT genetic algorithm.
+
+![asdf](backflip.gif)
 
 ## Simulation ##
 Jerry Learns uses [Pymunk](http://www.pymunk.org/en/latest/) its physics simulation and [Pygame](https://www.pygame.org)
