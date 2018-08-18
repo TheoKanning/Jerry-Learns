@@ -4,7 +4,7 @@ This simulation of Jerry Smith can be taught to walk or backflip using a NEAT ge
 ![asdf](backflip.gif)
 
 ## Simulation ##
-Jerry Learns uses [Pymunk](http://www.pymunk.org/en/latest/) its physics simulation and [Pygame](https://www.pygame.org)
+Jerry Learns uses [Pymunk](http://www.pymunk.org/en/latest/) for its physics simulation and [Pygame](https://www.pygame.org)
  for graphics. Each joint is simulated as a pivot constraint, rotary limit, and a motor to provide motion. 
  
 ## Evolution ##
